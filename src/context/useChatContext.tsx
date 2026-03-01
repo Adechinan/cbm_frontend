@@ -1,8 +1,7 @@
 /* Konrad Ahodan : konrad.ahodan@approbations.ca */
 'use client'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useState } from 'react'
 
-import { getUserById } from '@/helpers/data'
 import type { ChildrenType } from '@/types/component-props'
 import type { ChatContextType, ChatOffcanvasStatesType, OffcanvasControlType } from '@/types/context'
 import type { UserType } from '@/types/data'
@@ -25,9 +24,9 @@ export const ChatProvider = ({ children }: ChildrenType) => {
     showUserProfile: false,
   })
 
-  const changeActiveChat = async (userId: UserType['id']) => {
-    const user = await getUserById(userId)
-    if (user) setActiveChat(user)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const changeActiveChat = async (_userId: UserType['id']) => {
+    // Chat feature non utilisé dans cette application
   }
 
   const toggleChatList: OffcanvasControlType['toggle'] = () => {
@@ -56,10 +55,6 @@ export const ChatProvider = ({ children }: ChildrenType) => {
     open: offcanvasStates.showUserSetting,
     toggle: toggleUserSetting,
   }
-
-  useEffect(() => {
-    changeActiveChat('101')
-  }, [])
 
   return (
     <ChatContext.Provider
