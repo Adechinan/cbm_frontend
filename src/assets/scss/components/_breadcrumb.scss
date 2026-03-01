@@ -1,0 +1,26 @@
+/* Konrad Ahodan : konrad.ahodan@approbations.ca */
+//
+// breadcrumb.scss
+//
+
+// Breadcrumb item arrow
+.breadcrumb {
+    margin: 0;
+    padding: 0;
+
+    .breadcrumb-item {
+        a {
+            color: var(--#{$prefix}body-color);
+
+            &:hover {
+                color: var(--#{$prefix}primary);
+            }
+        }
+
+        +.breadcrumb-item {
+            &::before {
+                font-family: "tabler-icons";
+            }
+        }
+    }
+}

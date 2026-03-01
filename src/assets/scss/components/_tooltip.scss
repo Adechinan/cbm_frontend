@@ -1,0 +1,11 @@
+/* Konrad Ahodan : konrad.ahodan@approbations.ca */
+//
+// _tooltip.scss
+//
+
+@each $color,
+$value in $theme-colors {
+    .tooltip-#{$color} {
+        --#{$prefix}tooltip-bg: var(--#{$prefix}#{$color});
+    }
+}
