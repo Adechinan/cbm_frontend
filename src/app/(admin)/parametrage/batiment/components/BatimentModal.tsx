@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react'
 import { Accordion, Alert, Badge, Button, Col, Form, Modal, Row } from 'react-bootstrap'
-import { BatimentType, ChampFicheType, SectionFicheType } from '@/types/entretien-batiment'
+import { BatimentType, ChampFicheType, SectionFicheType, ZoneClimatiqueType } from '@/types/entretien-batiment'
 import { createBatiment, updateBatiment } from '@/services/batimentService'
 import { BENIN_GEO } from '@/assets/data/benin-geo'
 
@@ -26,6 +26,7 @@ const KNOWN_KEYS = new Set([
   'code', 'codeBatiment', 'denomination', 'organisme', 'modeAcquisition',
   'anneeConstruction', 'anneesRestructuration', 'coutConstruction', 'statutConstruction',
   'departement', 'commune', 'arrondissement', 'adresse', 'latitude', 'longitude',
+  'departementClimatique',
   'typeConstruction', 'niveauxSousSol', 'nombreEtages',
   'usages', 'typeMateriau', 'typeToiture', 'energies',
   'surfaceTotale', 'surfaceSallesHumides', 'nombrePieces',
@@ -77,13 +78,14 @@ function batimentToForm(b: BatimentType, champs: ChampFicheType[]): DynForm {
   form['adresse'] = b.adresse
   form['latitude'] = b.latitude !== undefined ? String(b.latitude) : ''
   form['longitude'] = b.longitude !== undefined ? String(b.longitude) : ''
+  form['departementClimatique'] = b.departementClimatique ?? ''
   form['typeConstruction'] = TC_ENUM_TO_LABEL[b.typeConstruction] ?? b.typeConstruction
   form['niveauxSousSol'] = String(b.niveauxSousSol)
   form['nombreEtages'] = String(b.nombreEtages)
-  form['usages'] = [...b.usages]
-  form['typeMateriau'] = [...b.typeMateriau]
-  form['typeToiture'] = [...b.typeToiture]
-  form['energies'] = [...b.energies]
+  form['usages'] = Array.isArray(b.usages) ? [...b.usages] : []
+  form['typeMateriau'] = Array.isArray(b.typeMateriau) ? [...b.typeMateriau] : []
+  form['typeToiture'] = Array.isArray(b.typeToiture) ? [...b.typeToiture] : []
+  form['energies'] = Array.isArray(b.energies) ? [...b.energies] : []
   form['surfaceTotale'] = String(b.surfaceTotale)
   form['surfaceSallesHumides'] = String(b.surfaceSallesHumides)
   form['nombrePieces'] = String(b.nombrePieces)
@@ -131,6 +133,7 @@ function formToBatiment(f: DynForm): Omit<BatimentType, 'id'> {
     adresse: str('adresse'),
     latitude: numOrUndef(str('latitude')),
     longitude: numOrUndef(str('longitude')),
+    departementClimatique: str('departementClimatique') || undefined,
     typeConstruction: TC_LABEL_TO_ENUM[str('typeConstruction')] ?? 'batiment_etage',
     niveauxSousSol: num('niveauxSousSol'),
     nombreEtages: num('nombreEtages'),
@@ -250,9 +253,10 @@ type Props = {
   batiment: BatimentType | null
   onSaved: (b: BatimentType) => void
   sections: SectionFicheType[]
+  zonesClimatiques: ZoneClimatiqueType[]
 }
 
-export default function BatimentModal({ show, onHide, batiment, onSaved, sections }: Props) {
+export default function BatimentModal({ show, onHide, batiment, onSaved, sections, zonesClimatiques }: Props) {
   const isEdit = !!batiment
   const [form, setFormState] = useState<DynForm>({})
   const [loading, setLoading] = useState(false)
@@ -477,6 +481,31 @@ export default function BatimentModal({ show, onHide, batiment, onSaved, section
                                 ))}
                               </Form.Select>
                               <Form.Control.Feedback type="invalid">Champ requis</Form.Control.Feedback>
+                            </Col>
+                          )
+                        }
+
+                        if (champ.fieldKey === 'departementClimatique') {
+                          return (
+                            <Col key={champ.id} md={4}>
+                              <Form.Label className="fw-medium">
+                                {champ.libelle}
+                                {champ.obligatoire && <span className="text-danger ms-1">*</span>}
+                              </Form.Label>
+                              <Form.Select
+                                value={getStr(form, 'departementClimatique')}
+                                onChange={(e) => setField('departementClimatique', e.target.value)}
+                                isInvalid={invalid}
+                              >
+                                <option value="">— Zone climatique —</option>
+                                {zonesClimatiques.map((zone) => (
+                                  <optgroup key={zone.id} label={zone.nom}>
+                                    {zone.departements.map((dep) => (
+                                      <option key={dep.id} value={String(dep.id)}>{dep.nom}</option>
+                                    ))}
+                                  </optgroup>
+                                ))}
+                              </Form.Select>
                             </Col>
                           )
                         }

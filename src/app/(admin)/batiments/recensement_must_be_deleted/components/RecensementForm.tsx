@@ -222,15 +222,15 @@ export default function RecensementForm({
                         )
                       )
                     }}
-                    onChangeNature={(critereId, elementId, value) => {
-                      setEvalsTech((prev) =>
-                        prev.map((x) =>
-                          x.critereId === critereId && x.elementId === elementId
-                            ? { ...x, nature: value }
-                            : x
-                        )
-                      )
-                    }}
+                    // onChangeNature={(critereId, elementId, value) => {
+                    //   setEvalsTech((prev) =>
+                    //     prev.map((x) =>
+                    //       x.critereId === critereId && x.elementId === elementId
+                    //         ? { ...x, nature: value }
+                    //         : x
+                    //     )
+                    //   )
+                    // }}
                     onChangeConstat={(critereId, elementId, value) => {
                       setEvalsTech((prev) =>
                         prev.map((x) =>

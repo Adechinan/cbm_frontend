@@ -8,8 +8,8 @@ type Props = {
   evaluations: EvalWithBatiment[]
 }
 
-function NoteCell({ value }: { value?: number }) {
-  if (value === undefined) return <span className="text-muted">—</span>
+function NoteCell({ value }: { value?: number | null }) {
+  if (value == null) return <span className="text-muted">—</span>
   const color = value >= 7 ? 'success' : value >= 5 ? 'warning' : 'danger'
   return <span className={`fw-semibold text-${color}`}>{value.toFixed(1)}</span>
 }

@@ -39,7 +39,7 @@ export type ElementCritereEvaluation = {
   id: IdType
   libelle: string
   ponderation: number    // % de la section (0-100)
-  description?: string
+  description?: string // texte d'aide à l'évaluation correspond a la colonne Nature et caracteristique
   ordre: number
   etatsDisponibles: EtatDisponible[]
   actif: boolean
@@ -71,6 +71,7 @@ export type BatimentType = {
   adresse: string
   latitude?: number
   longitude?: number
+  departementClimatique: DepartementClimatiqueType['id']  // lien vers la zone climatique (si existante)
   typeConstruction: 'villa_rdc' | 'batiment_etage' | 'autre'
   niveauxSousSol: number
   nombreEtages: number
@@ -264,6 +265,7 @@ export type EvaluationType = {
   departementClimatique?: string
   coefficientUsure?: number  // CU en %
   coutGlobal?: number        // FCFA
+  campagneId?: string                    // lien vers la campagne d'appartenance (si existante)
   recencementId?: RecensementType['id']  // lien vers le recensement de référence (si existant)
   recencement?: RecensementType
   // criteresFonctionnels: {
@@ -279,4 +281,21 @@ export type EvaluationType = {
   //   constat: string
   //   etat: string
   // }[]
+}
+
+// ─── Campagne d'évaluation ────────────────────────────────────────────────────
+
+export type CampagneStatut = 'brouillon' | 'en_cours' | 'validée' | 'clôturée'
+
+export type CampagneType = {
+  id: IdType
+  code: string                        // CA-AAAA-XX
+  nom: string
+  anneeRef: number
+  statut: CampagneStatut
+  dateDebut: string
+  dateFin: string
+  batimentIds: BatimentType['id'][]
+  evaluationIds: EvaluationType['id'][]
+  createdAt: string
 }

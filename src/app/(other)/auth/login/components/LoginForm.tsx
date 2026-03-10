@@ -51,9 +51,9 @@ const LoginForm = () => {
       )}
       <div className="d-flex justify-content-between mb-3">
         <div className="form-check">
-          <FormCheck className="ps-0" label="Se souvenir de moi" id="sign-in" />
+          {/* <FormCheck className="ps-0" label="Se souvenir de moi" id="sign-in" /> */}
         </div>
-        <Link href="/auth/recover-password" className="text-muted border-bottom border-dashed">Mot de passe oublié</Link>
+        {/* <Link href="/auth/recover-password" className="text-muted border-bottom border-dashed">Mot de passe oublié</Link> */}
       </div>
       <div className="d-grid">
         <button className="btn btn-primary" type="submit" disabled={loading}>

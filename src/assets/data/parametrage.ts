@@ -1,5 +1,5 @@
 /* Konrad Ahodan : konrad.ahodan@approbations.ca */
-import { AleaClimatiqueType, BatimentType, CartoAleaType, ChampFicheType, CritereEtatBatimentType, CritereEvalPonderationType, CritereEvaluationType, DepartementClimatiqueType, EtatDisponible, EvaluationFonctionnelleType, EvaluationTechniqueType, EvaluationType, NiveauRisqueDisponible, PartieOuvrageType, PonderationAleaType, RecensementType, SectionFicheType, TypeBatimentType, ZoneClimatiqueType } from '@/types/entretien-batiment'
+import { AleaClimatiqueType, BatimentType, CampagneType, CartoAleaType, ChampFicheType, CritereEtatBatimentType, CritereEvalPonderationType, CritereEvaluationType, DepartementClimatiqueType, EtatDisponible, EvaluationFonctionnelleType, EvaluationTechniqueType, EvaluationType, NiveauRisqueDisponible, PartieOuvrageType, PonderationAleaType, RecensementType, SectionFicheType, TypeBatimentType, ZoneClimatiqueType } from '@/types/entretien-batiment'
 
 // ─── Types de bâtiment ───────────────────────────────────────────────────────
 
@@ -51,9 +51,10 @@ export const sectionsFicheData: SectionFicheType[] = [
         options: ['Littoral', 'Atlantique', 'Ouémé', 'Plateau', 'Mono', 'Couffo', 'Collines', 'Zou', 'Donga', 'Borgou', 'Atacora', 'Alibori'] },
       { id: 'ch-10', sectionId: 'sec-03', libelle: 'Commune',         type: 'Texte',  obligatoire: true,  actif: true, ordre: 2, fieldKey: 'commune' },
       { id: 'ch-11', sectionId: 'sec-03', libelle: 'Arrondissement',  type: 'Texte',  obligatoire: false, actif: true, ordre: 3, fieldKey: 'arrondissement' },
-      { id: 'ch-12', sectionId: 'sec-03', libelle: 'Adresse',         type: 'Texte',  obligatoire: true,  actif: true, ordre: 4, fieldKey: 'adresse' },
-      { id: 'ch-13', sectionId: 'sec-03', libelle: 'Latitude (GPS)',  type: 'GPS',    obligatoire: false, actif: true, ordre: 5, fieldKey: 'latitude' },
-      { id: 'ch-14', sectionId: 'sec-03', libelle: 'Longitude (GPS)', type: 'GPS',    obligatoire: false, actif: true, ordre: 6, fieldKey: 'longitude' },
+      { id: 'ch-12', sectionId: 'sec-03', libelle: 'Adresse',         type: 'Texte',  obligatoire: false,  actif: true, ordre: 4, fieldKey: 'adresse' },
+      { id: 'ch-13', sectionId: 'sec-03', libelle: 'Latitude (GPS)',      type: 'GPS',    obligatoire: false, actif: true, ordre: 5, fieldKey: 'latitude' },
+      { id: 'ch-14', sectionId: 'sec-03', libelle: 'Longitude (GPS)',     type: 'GPS',    obligatoire: false, actif: true, ordre: 6, fieldKey: 'longitude' },
+      { id: 'ch-14b', sectionId: 'sec-03', libelle: 'Zone climatique',    type: 'Select', obligatoire: true, actif: true, ordre: 7, fieldKey: 'departementClimatique' },
     ],
   },
   // ── Type de construction ──────────────────────────────────────────────────
@@ -240,122 +241,124 @@ export const criteresEtatTechnique: CritereEvaluationType[] = [
   {
     id: 'sct-01', type: 'technique', section: 'Structure / Fondations', ponderation: 15,
     elements: [
-      { id: 'ct-01', libelle: 'Fondations',                  ponderation: 25, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-02', libelle: 'Planchers',                   ponderation: 25, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-03', libelle: 'Poteaux / poutres',           ponderation: 25, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-04', libelle: 'Mvts du bâtiment - fissures', ponderation: 25, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-01', libelle: 'Fondations',                  description: "Soubassement et chaînages bas", ponderation: 25, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-02', libelle: 'Planchers',                   description: "Dalle plancher corps creux", ponderation: 25, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-03', libelle: 'Poteaux / poutres',           description: "Béton armé ou structure métallique", ponderation: 25, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-04', libelle: 'Mvts du bâtiment - fissures', description: "Murs", ponderation: 25, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-02', type: 'technique', section: 'Façade (peinture extérieure, bardage, revêtement)', ponderation: 5,
     elements: [
-      { id: 'ct-05', libelle: 'Revêtement extérieur', ponderation: 50, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-06', libelle: 'Peinture intérieure',  ponderation: 50, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-05', libelle: 'Revêtement extérieur (peinture, Mur rideau, Bardage, etc.)', description: "Façade vitrée en aluminium", ponderation: 50, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-06', libelle: 'Peinture Intérieure (mur, plafond, menuiseries)',  description: "Murs, plafonds et portes", ponderation: 50, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-03', type: 'technique', section: 'Menuiseries extérieures', ponderation: 5,
     elements: [
-      { id: 'ct-07', libelle: "Portes d'entrée en façade", ponderation: 34, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-08', libelle: 'Portes intérieures',         ponderation: 33, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-09', libelle: 'Fenêtres',                   ponderation: 33, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-07', libelle: "Portes d'entrée en façade", description: "Métallique", ponderation: 34, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-08', libelle: 'Portes intérieures',         description: "Vitrées", ponderation: 33, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-09', libelle: 'Fenêtres',                   description: "Châssis aluminium", ponderation: 33, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-04', type: 'technique', section: 'Couverture / Étanchéité', ponderation: 10,
     elements: [
-      { id: 'ct-10', libelle: 'Toiture',                                                ponderation: 34, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-11', libelle: 'Étanchéité',                                             ponderation: 33, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-12', libelle: "Aménagements de toiture (skydomes, descentes EP, etc.)", ponderation: 33, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-10', libelle: 'Toiture',                                                description: "Terrasse béton", ponderation: 34, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-11', libelle: 'Étanchéité',                                             description: "Bitume, membrane", ponderation: 33, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-12', libelle: "Aménagements de toiture (skydomes, descentes EP, etc.)", description: "Evacuation pluviale (descentes pluviales en PVC)", ponderation: 33, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-05', type: 'technique', section: 'Second Œuvre', ponderation: 10,
     elements: [
-      { id: 'ct-13', libelle: 'Revêtements de sols — hall public',          ponderation: 12, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-14', libelle: 'Revêtements de sols — circulations',         ponderation: 12, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-15', libelle: "Revêtements de sols — espaces de travail",   ponderation: 11, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-16', libelle: 'Revêtements de sols — escaliers',            ponderation: 11, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-17', libelle: "Revêtements de murs — espaces de travail",   ponderation: 11, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-18', libelle: 'Revêtements de murs — escaliers',            ponderation: 11, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-19', libelle: 'Cloisons / doublage',                        ponderation: 11, ordre: 7, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-20', libelle: 'Faux-plafonds',                              ponderation: 11, ordre: 8, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-21', libelle: 'Panneaux acoustiques',                       ponderation: 10, ordre: 9, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-13', libelle: 'Revêtements de sols hall public',          description: "Carrelage", ponderation: 12, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-14', libelle: 'Revêtements muraux hall public',         description: "Carrelage", ponderation: 12, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-15', libelle: "Revêtements de sols des circulations ",   description: "Carrelage", ponderation: 11, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-16', libelle: 'Revêtements de sols espaces de travail',            description: "Carrelage", ponderation: 11, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-17', libelle: "Revêtements de sols escalier",   description: "Carrelage", ponderation: 11, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-18', libelle: 'Revêtements de murs circulations',            description: "Peinture, enduit", ponderation: 11, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-19', libelle: 'Revêtements de murs espaces de travail',                        description: "Peinture, enduit", ponderation: 11, ordre: 7, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-20', libelle: 'Revêtements de murs escalier',                              description: "Peinture, enduit", ponderation: 11, ordre: 8, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-21', libelle: 'Cloison/doublage',                       description: "Murs", ponderation: 10, ordre: 9, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-62', libelle: 'Plafonds et faux-plafonds',                       description: "Dalles minérales", ponderation: 10, ordre: 10, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-63', libelle: 'Panneaux acoustiques',                       description: "Panneaux acoustiques", ponderation: 10, ordre: 11, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-06', type: 'technique', section: 'Sécurité incendie', ponderation: 10,
     elements: [
-      { id: 'ct-22', libelle: 'Colonnes sèches',                                ponderation: 12, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-23', libelle: 'Colonnes humides',                               ponderation: 12, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-24', libelle: 'Désenfumage',                                    ponderation: 11, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-25', libelle: 'RIA',                                            ponderation: 11, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-26', libelle: 'Sprinklers',                                     ponderation: 11, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-27', libelle: "Blocs Autonomes d'Éclairage de Sécurité (BAES)", ponderation: 11, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-28', libelle: 'Extincteurs',                                    ponderation: 11, ordre: 7, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-29', libelle: 'Portes coupe-feu',                               ponderation: 11, ordre: 8, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-30', libelle: "Espaces d'attente sécurisés",                    ponderation: 10, ordre: 9, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-22', libelle: 'Colonnes sèches',                                description: "Conduites métalliques fixes", ponderation: 12, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-23', libelle: 'Colonnes humides',                               description: "Conduites fixes sous pression", ponderation: 12, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-24', libelle: 'Désenfumage',                                    description: "Volets de désenfumage", ponderation: 11, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-25', libelle: 'RIA',                                            description: "Tuyau semi-rigide", ponderation: 11, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-26', libelle: 'Sprinklers',                                     description: "Système d’extinction automatique à eau", ponderation: 11, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-27', libelle: "Blocs Autonomes d'Éclairage de Sécurité (BAES)", description: "BAES lumineux", ponderation: 11, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-28', libelle: 'Extincteurs',                                    description: "A poudre", ponderation: 11, ordre: 7, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-29', libelle: 'Portes coupe-feu',                               description: "Portes métalliques avec ferme-porte automatique", ponderation: 11, ordre: 8, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-30', libelle: "Espaces d'attente sécurisés",                    description: "Zones de refuge avec alarme", ponderation: 10, ordre: 9, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-07', type: 'technique', section: "Sûreté / Contrôle d'accès / Vidéo", ponderation: 5,
     elements: [
-      { id: 'ct-31', libelle: "Contrôle d'accès",           ponderation: 15, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-32', libelle: 'Vidéosurveillance',           ponderation: 15, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-33', libelle: 'Système anti-intrusion',      ponderation: 14, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-34', libelle: 'Porte automatique',           ponderation: 14, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-35', libelle: 'Portail motorisé / Barrière', ponderation: 14, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-36', libelle: 'Barrière levante',            ponderation: 14, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-37', libelle: 'Clôture du site',             ponderation: 14, ordre: 7, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-31', libelle: "Contrôle d'accès",           description: "Badges, interphones, caméras", ponderation: 15, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-32', libelle: 'Vidéosurveillance',           description: "Badges, interphones, caméras", ponderation: 15, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-33', libelle: 'Système anti-intrusion',      description: "Badges, interphones, caméras", ponderation: 14, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-34', libelle: 'Porte automatique',           description: "Mécanismes électromécaniques", ponderation: 14, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-35', libelle: 'Portail motorisé / Barrière', description: "Mécanismes électromécaniques", ponderation: 14, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-36', libelle: 'Barrière levante',            description: "Mécanismes électromécaniques", ponderation: 14, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-37', libelle: 'Clôture du site',             description: "Mur en parpaing, barbelés", ponderation: 14, ordre: 7, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-08', type: 'technique', section: 'Ventilation - Climatisation', ponderation: 10,
     elements: [
-      { id: 'ct-38', libelle: "VMC (extracteur d'air, etc.)",                                      ponderation: 15, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-39', libelle: 'CTA bâtiment',                                                      ponderation: 15, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-40', libelle: "Gaines de ventilation et de traitement d'air (réseau de conduits)", ponderation: 14, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-41', libelle: 'Régulation (thermostats, etc.)',                                     ponderation: 14, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-42', libelle: 'Production de froid (VRV, etc.)',                                    ponderation: 14, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-43', libelle: 'Distribution du froid (réseaux de distribution)',                    ponderation: 14, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-44', libelle: 'Éléments de froid (cassettes, splits, etc.)',                        ponderation: 14, ordre: 7, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-38', libelle: "VMC (extracteur d'air, etc.)",                                      description: "Extracteurs d’air, gaines", ponderation: 15, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-39', libelle: 'CTA bâtiment',                                                      description: "Unités de traitement centralisé", ponderation: 15, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-40', libelle: "Gaines de ventilation et de traitement d'air (réseau de conduits)", description: "Conduits métalliques", ponderation: 14, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-41', libelle: 'Régulation (thermostats, etc.)',                                     description: "Thermostats muraux", ponderation: 14, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-42', libelle: 'Production de froid (VRV, etc.)',                                    description: "Systèmes VRV, climatiseurs split", ponderation: 14, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-43', libelle: 'Distribution du froid (réseaux de distribution)',                    description: "Canalisations en cuivre", ponderation: 14, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-44', libelle: 'Terminaux de froid (cassettes, splits, etc.)',                       description: "cassettes, splits", ponderation: 14, ordre: 7, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-09', type: 'technique', section: 'Plomberie / Sanitaire', ponderation: 10,
     elements: [
-      { id: 'ct-45', libelle: 'Eau Chaude Sanitaire',                                                              ponderation: 25, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-46', libelle: 'Canalisations (réseaux eau froide, chaude, eaux usées, pluviales)',                 ponderation: 25, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-47', libelle: 'Appareillages (lavabos, WC, douches, urinoirs, robinetterie, mitigeurs)',           ponderation: 25, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-48', libelle: "Appareillages PMR (WC rehaussé, barres d'appui, lavabos bas)",                     ponderation: 25, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-45', libelle: 'Eau Chaude Sanitaire',                                                              description: "Chauffe-eau électriques", ponderation: 25, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-46', libelle: 'Canalisations (réseaux eau froide, chaude, eaux usées, pluviales)',                 description: "PVC, PPR", ponderation: 25, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-47', libelle: 'Appareillages (lavabos, WC, douches, urinoirs, robinetterie, mitigeurs, etc.)',           description: "Lavabos, WC, urinoirs, douches, robinetterie, mitigeurs", ponderation: 25, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-48', libelle: "Appareillages PMR (Lavabos, WC, douches, urinoirs, robinetterie, mitigeurs, etc.)",                     description: "WC rehaussé, barres d’appui, lavabos bas", ponderation: 25, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-10', type: 'technique', section: 'Électricité courants forts', ponderation: 10,
     elements: [
-      { id: 'ct-49', libelle: 'Groupe électrogène',                                                                                                               ponderation: 17, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-50', libelle: 'Onduleur',                                                                                                                         ponderation: 17, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-51', libelle: 'Transformateur',                                                                                                                   ponderation: 17, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-52', libelle: 'État général des armoires (conformité normes, propreté, ventilation, absence de rouille)',                                         ponderation: 17, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-53', libelle: 'État général du câblage (goulottes, absence de dénudés, mise à la terre)',                                                         ponderation: 16, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-54', libelle: "État des luminaires (niveau d'éclairement, vétusté des appareils)",                                                               ponderation: 16, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-49', libelle: 'Groupe électrogène',                                                                                                               description: "Diesel", ponderation: 17, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-50', libelle: 'Onduleur',                                                                                                                         description: "Alimentation de secours pour équipements informatiques", ponderation: 17, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-51', libelle: 'Transformateur',                                                                                                                   description: "Poste de transformation HT/BT", ponderation: 17, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-52', libelle: 'Etat général des armoires (conformité aux normes, propreté, absence de poussière, rouille, ventilation, etc.)',                                         description: "TGBT, armoires, coffrets", ponderation: 17, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-53', libelle: 'Etat général du câblage (câblage apparent ou en goulottes, absence de fils dénudés ou de bricolage, présence de mise à la terre conforme, etc.)',       description: "Câbles en goulottes, chemins de câbles, mise à la terre", ponderation: 16, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-54', libelle: "Eclairage (types de luminaires, niveau d’éclairement suffisant, luminaires vétustes ou en mauvais état, etc.)",                               description: "Luminaires à tubes LED, plafonniers, spots encastrés,", ponderation: 16, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-11', type: 'technique', section: 'Appareils élévateurs', ponderation: 5,
     elements: [
-      { id: 'ct-55', libelle: 'Ascenseurs', ponderation: 100, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-55', libelle: 'Ascenseurs', description: "Ascenseurs électriques", ponderation: 100, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
   {
     id: 'sct-12', type: 'technique', section: 'Voiries - Réseaux - Divers', ponderation: 5,
     elements: [
-      { id: 'ct-56', libelle: 'Voirie interne',                                                                                  ponderation: 17, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-57', libelle: 'Réseaux divers (eau potable, assainissement EU/EP, électricité extérieure, téléphone, etc.)',     ponderation: 17, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-58', libelle: 'Espaces verts — aire de jeu',                                                                     ponderation: 17, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-59', libelle: 'Séparateur à hydrocarbures',                                                                      ponderation: 17, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-60', libelle: 'Éclairage extérieur',                                                                             ponderation: 16, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
-      { id: 'ct-61', libelle: "Accès à l'accueil du public (guérite, etc.)",                                                     ponderation: 16, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-56', libelle: 'Voirie interne',                                                                                  description: "Pavés autobloquants", ponderation: 17, ordre: 1, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-57', libelle: 'Réseaux divers (eau potable, assainissement (EU/EP), électrique extérieur, télécoms, etc.)',     description: "Regards, caniveaux", ponderation: 17, ordre: 2, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-58', libelle: 'Espaces verts — aire de jeu',                                                                     description: "Gazon, arbres d’ombrage", ponderation: 17, ordre: 3, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-59', libelle: 'Séparateur à hydrocarbures',                                                                      description: "Dispositif de traitement des eaux usées issues des parkings", ponderation: 17, ordre: 4, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-60', libelle: 'Éclairage extérieur',                                                                             description: "Lampadaires solaires", ponderation: 16, ordre: 5, etatsDisponibles: ETATS_GENERAUX, actif: true },
+      { id: 'ct-61', libelle: "Accès à l'accueil du public (guérite, etc.)",                                                     description: "Guérite", ponderation: 16, ordre: 6, etatsDisponibles: ETATS_GENERAUX, actif: true },
     ],
   },
 ]
@@ -379,6 +382,7 @@ export const batimentsData: BatimentType[] = [
     adresse: 'Avenue Jean-Paul II, Cotonou',
     latitude: 6.3654,
     longitude: 2.4183,
+    departementClimatique: 'Couffo',
     typeConstruction: 'batiment_etage',
     niveauxSousSol: 0,
     nombreEtages: 3,
@@ -403,6 +407,7 @@ export const batimentsData: BatimentType[] = [
     departement: 'Zou',
     commune: 'Abomey',
     adresse: 'Place Goho, Abomey',
+    departementClimatique: 'Zou',
     typeConstruction: 'batiment_etage',
     niveauxSousSol: 0,
     nombreEtages: 2,
@@ -707,6 +712,8 @@ export const criteresEvalPonderationData: CritereEvalPonderationType[] = [
 ]
 
 // ─── Évaluations complètes mock ───────────────────────────────────────────────
+
+export let campagnesData: CampagneType[] = []
 
 export const evaluationsData: EvaluationType[] = [
   {

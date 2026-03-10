@@ -24,7 +24,7 @@ type Props = {
   etatsCouleur: Record<string, string>
   isEdit?: boolean
   onChangeEtat: (critereId: string, elementId: string, value: string) => void
-  onChangeNature: (critereId: string, elementId: string, value: string) => void
+  // onChangeNature: (critereId: string, elementId: string, value: string) => void
   onChangeConstat: (critereId: string, elementId: string, value: string) => void
 }
 
@@ -36,7 +36,7 @@ export default function TechniqueGroupedForm({
   etatsCouleur,
   isEdit = true,
   onChangeEtat,
-  onChangeNature,
+  // onChangeNature,
   onChangeConstat,
 }: Props) {
   return (
@@ -50,9 +50,9 @@ export default function TechniqueGroupedForm({
               </th>
             </tr>
             <tr>
-              <th style={{ width: '29%' }}>Élément</th>
+              <th style={{ width: '49%' }}>Élément</th>
               <th style={{ width: isEdit ? '20%' : '10%' }}>État</th>
-              <th style={{ width: '20%' }}>Nature</th>
+              {/* <th style={{ width: '29%' }}>Nature</th> */}
               <th style={{ width: '33%' }}>Constat</th>
             </tr>
           </thead>
@@ -61,7 +61,10 @@ export default function TechniqueGroupedForm({
               const info = mapTech.get(c.elementId)
               return (
                 <tr key={`${c.critereId}-${c.elementId}`}>
-                  <td className="fw-medium small">{info?.libelle ?? c.elementId}</td>
+                  <td className="fw-medium small">
+                    {info?.libelle ?? c.elementId}
+                    {c?.nature && <div className="text-muted small "><i>Nature : {c.nature}</i></div>}
+                  </td>
                   <td>
                     {isEdit ? (
                       <EtatSelector
@@ -90,7 +93,7 @@ export default function TechniqueGroupedForm({
                       </Badge>
                     )}
                   </td>
-                  <td>
+                  {/* <td>
                     {isEdit ? (
                       <Form.Control
                         type="text"
@@ -102,7 +105,7 @@ export default function TechniqueGroupedForm({
                     ) : (
                       <span className="small">{c.nature || '—'}</span>
                     )}
-                  </td>
+                  </td> */}
                   <td>
                     {isEdit ? (
                       <Form.Control

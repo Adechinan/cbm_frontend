@@ -7,8 +7,8 @@ type Props = {
   evaluations: EvaluationType[]
 }
 
-function NoteCell({ value }: { value?: number }) {
-  if (value === undefined) return <span className="text-muted">—</span>
+function NoteCell({ value }: { value?: number | null }) {
+  if (value == null) return <span className="text-muted">—</span>
   const color = value >= 7 ? 'success' : value >= 5 ? 'warning' : 'danger'
   return <span className={`fw-semibold text-${color}`}>{value.toFixed(1)}</span>
 }
@@ -50,13 +50,13 @@ export default function SyntheseTable({ batiments, evaluations }: Props) {
                   </td>
                   <td className="text-muted">{b.organisme}</td>
                   <td className="text-muted">{b.departement}</td>
-                  <td className="text-end">{b.surfaceTotale.toLocaleString('fr-FR')}</td>
+                  <td className="text-end">{(b.surfaceTotale ?? 0).toLocaleString('fr-FR')}</td>
                   <td className="text-center text-muted">{evs.length}</td>
                   <td className="text-center"><NoteCell value={latest?.notePhysique} /></td>
                   <td className="text-center"><NoteCell value={latest?.noteFonctionnelle} /></td>
                   <td className="text-center"><NoteCell value={latest?.noteTechnique} /></td>
                   <td className="text-end">
-                    {latest?.coutGlobal !== undefined
+                    {latest?.coutGlobal != null
                       ? <span className="text-nowrap fw-medium">{latest.coutGlobal.toLocaleString('fr-FR')}</span>
                       : <span className="text-muted">—</span>
                     }

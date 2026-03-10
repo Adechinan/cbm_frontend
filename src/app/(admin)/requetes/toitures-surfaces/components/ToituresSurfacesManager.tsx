@@ -22,7 +22,7 @@ function groupByToiture(
 ): Array<{ toiture: string; count: number; items: BatimentType[] }> {
   const map = new Map<string, BatimentType[]>()
   for (const b of batiments) {
-    for (const t of b.typeToiture ?? []) {
+    for (const t of (Array.isArray(b.typeToiture) ? b.typeToiture : [])) {
       map.set(t, [...(map.get(t) ?? []), b])
     }
   }

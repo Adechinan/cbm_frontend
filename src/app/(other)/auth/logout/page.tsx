@@ -17,10 +17,10 @@ const LogoutPage = () => {
         <Row className="g-0 justify-content-center w-100 m-xxl-5 px-xxl-4 m-3">
           <Col xl={4} lg={5} md={6}>
             <Card className="overflow-hidden text-center h-100 p-xxl-4 p-3 mb-0">
-              <Link href="/dashboard/sales" className="auth-brand mb-3">
+              {/* <Link href="/dashboard/sales" className="auth-brand mb-3">
                 <Image src={logoDark} alt="dark logo" height={24} className="logo-dark" />
                 <Image src={logo} alt="logo light" height={24} className="logo-light" />
-              </Link>
+              </Link> */}
               <h3 className="fw-semibold mb-4">Vous êtes déconnecté</h3>
               {/* <div className="d-flex align-items-center gap-2 mb-3 text-start">
                 <Image src={avatar1} alt='avatar' className="avatar-xl rounded img-thumbnail" />

@@ -22,7 +22,7 @@ function groupByMateriau(
 ): Array<{ materiau: string; count: number; items: BatimentType[] }> {
   const map = new Map<string, BatimentType[]>()
   for (const b of batiments) {
-    for (const mat of b.typeMateriau ?? []) {
+    for (const mat of (Array.isArray(b.typeMateriau) ? b.typeMateriau : [])) {
       map.set(mat, [...(map.get(mat) ?? []), b])
     }
   }
@@ -129,7 +129,7 @@ export default function ConstructionManager({ batiments }: Props) {
 
   const materiauxData = groupByMateriau(batiments)
   const batimentsByMateriau = selectedMaterial
-    ? batiments.filter((b) => b.typeMateriau?.includes(selectedMaterial))
+    ? batiments.filter((b) => Array.isArray(b.typeMateriau) && b.typeMateriau.includes(selectedMaterial))
     : []
 
   // ── Pagination matériaux (card 2) ──

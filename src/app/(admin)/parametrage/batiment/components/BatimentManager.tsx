@@ -3,7 +3,7 @@
 
 import { useState } from 'react'
 import { Accordion, Badge, Button, Card, CardBody, CardHeader, Col, Modal, Pagination, Row, Table } from 'react-bootstrap'
-import { BatimentType, SectionFicheType } from '@/types/entretien-batiment'
+import { BatimentType, SectionFicheType, ZoneClimatiqueType } from '@/types/entretien-batiment'
 import { deleteBatiment } from '@/services/batimentService'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import BatimentModal from './BatimentModal'
@@ -28,9 +28,10 @@ const TYPE_LABEL: Record<string, string> = {
 type Props = {
   batimentsInit: BatimentType[]
   sections: SectionFicheType[]
+  zonesClimatiques: ZoneClimatiqueType[]
 }
 
-export default function BatimentManager({ batimentsInit, sections }: Props) {
+export default function BatimentManager({ batimentsInit, sections, zonesClimatiques }: Props) {
   const [batiments, setBatiments]       = useState<BatimentType[]>(batimentsInit)
   const [showModal,    setShowModal]    = useState(false)
   const [editBatiment, setEditBatiment] = useState<BatimentType | null>(null)
@@ -223,6 +224,7 @@ export default function BatimentManager({ batimentsInit, sections }: Props) {
         batiment={editBatiment}
         onSaved={handleSaved}
         sections={sections}
+        zonesClimatiques={zonesClimatiques}
       />
 
       {/* ── Modal Consulter (lecture seule) ───────────────────────────── */}
@@ -297,6 +299,14 @@ export default function BatimentManager({ batimentsInit, sections }: Props) {
                       </Col>
                       {field('Latitude', b.latitude)}
                       {field('Longitude', b.longitude)}
+                      {field('Zone climatique', (() => {
+                        if (!b.departementClimatique) return undefined
+                        for (const z of zonesClimatiques) {
+                          const d = z.departements.find((dep) => String(dep.id) === String(b.departementClimatique))
+                          if (d) return `${d.nom} — ${z.nom}`
+                        }
+                        return b.departementClimatique
+                      })())}
                     </Row>
                   </Accordion.Body>
                 </Accordion.Item>

@@ -1,6 +1,6 @@
 /* Konrad Ahodan : konrad.ahodan@approbations.ca */
 import PageTitle from '@/components/PageTitle'
-import { getBatiments, getSectionsFiche } from '@/services/batimentService'
+import { getBatiments, getSectionsFiche, getZonesClimatiques } from '@/services/batimentService'
 import { Metadata } from 'next'
 import BatimentManager from '../parametrage/batiment/components/BatimentManager'
 
@@ -9,12 +9,16 @@ export const metadata: Metadata = {
 }
 
 export default async function BatimentsPage() {
-  const [batiments, sections] = await Promise.all([getBatiments(), getSectionsFiche()])
+  const [batiments, sections, zonesClimatiques] = await Promise.all([
+    getBatiments(),
+    getSectionsFiche(),
+    getZonesClimatiques(),
+  ])
 
   return (
     <>
       <PageTitle title="Bâtiments" subTitle="Gestion" />
-      <BatimentManager batimentsInit={batiments} sections={sections} />
+      <BatimentManager batimentsInit={batiments} sections={sections} zonesClimatiques={zonesClimatiques} />
     </>
   )
 }

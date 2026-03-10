@@ -23,6 +23,7 @@
 import {
   AleaClimatiqueType,
   BatimentType,
+  CampagneType,
   CartoAleaType,
   ChampFicheType,
   CritereEtatBatimentType,
@@ -44,6 +45,7 @@ import {
 import {
   aleasClimatiquesData,
   batimentsData,
+  campagnesData,
   cartoAleaData,
   criteresEtatBatimentData,
   criteresEtatFonctionnel,
@@ -419,6 +421,13 @@ function generateEvaluationCode(date: string): string {
   return `EV-BAT-${date}-${String(count).padStart(2, '0')}`
 }
 
+export async function getEvaluation(id: string): Promise<EvaluationType> {
+  if (API_BASE) return tryApi(() => apiFetch<EvaluationType>(`/api/evaluations/${id}`), evaluationsData.find((e) => e.id === id) ?? evaluationsData[0])
+  const ev = evaluationsData.find((e) => e.id === id)
+  if (!ev) throw new Error(`Évaluation ${id} introuvable`)
+  return ev
+}
+
 export async function getEvaluations(batimentId?: string): Promise<EvaluationType[]> {
   const mockData = evaluationsData.map((e) => ({
     ...e,
@@ -471,6 +480,123 @@ export async function deleteEvaluation(id: string): Promise<void> {
   if (API_BASE) { await apiFetch(`/api/evaluations/${id}`, { method: 'DELETE' }); return }
   const idx = evaluationsData.findIndex((e) => e.id === id)
   if (idx !== -1) evaluationsData.splice(idx, 1)
+}
+
+// ─── Campagnes d'évaluation ───────────────────────────────────────────────────
+
+function generateCampagneCode(year: number): string {
+  const count = campagnesData.filter((c) => new Date(c.createdAt).getFullYear() === year).length
+  return `CA-${year}-${String(count).padStart(2, '0')}`
+}
+
+export async function getCampagnes(): Promise<CampagneType[]> {
+  if (!API_BASE) return campagnesData
+  try { return await apiFetch<CampagneType[]>('/api/campagnes') } catch { return campagnesData }
+}
+
+export async function saveCampagne(
+  data: { nom: string; anneeRef: number; dateDebut: string; dateFin: string; batimentIds: string[] }
+): Promise<{ campagne: CampagneType; evaluations: EvaluationType[] }> {
+  if (API_BASE) {
+    const campagne = await apiFetch<CampagneType>('/api/campagnes', { method: 'POST', body: JSON.stringify(data) })
+    return { campagne, evaluations: [] }
+  }
+  const today = new Date().toISOString().split('T')[0]
+  const campagneId = `camp-${Date.now()}`
+  const newEvaluations: EvaluationType[] = []
+  for (const batimentId of data.batimentIds) {
+    const code = generateEvaluationCode(today)
+    const newEval: EvaluationType = {
+      id: `eval-camp-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      code,
+      batimentId,
+      campagneId,
+      date: today,
+      statut: 'brouillon',
+      anneeRef: data.anneeRef,
+    }
+    evaluationsData.push(newEval)
+    newEvaluations.push(newEval)
+  }
+  const campagne: CampagneType = {
+    id: campagneId,
+    code: generateCampagneCode(data.anneeRef),
+    nom: data.nom,
+    anneeRef: data.anneeRef,
+    statut: 'brouillon',
+    dateDebut: data.dateDebut,
+    dateFin: data.dateFin,
+    batimentIds: data.batimentIds,
+    evaluationIds: newEvaluations.map((e) => e.id),
+    createdAt: today,
+  }
+  campagnesData.push(campagne)
+  return { campagne, evaluations: newEvaluations }
+}
+
+export async function updateCampagne(
+  id: string,
+  data: Partial<Pick<CampagneType, 'nom' | 'anneeRef' | 'statut' | 'dateDebut' | 'dateFin' | 'batimentIds'>>
+): Promise<{ campagne: CampagneType; newEvaluations: EvaluationType[] }> {
+  if (API_BASE) {
+    return apiFetch<{ campagne: CampagneType; newEvaluations: EvaluationType[] }>(
+      `/api/campagnes/${id}`, { method: 'PUT', body: JSON.stringify(data) }
+    )
+  }
+  const idx = campagnesData.findIndex((c) => c.id === id)
+  if (idx === -1) throw new Error(`Campagne ${id} introuvable`)
+  const current = campagnesData[idx]
+
+  const newBatimentIds = data.batimentIds ?? current.batimentIds
+  const addedIds   = data.batimentIds ? newBatimentIds.filter((bId) => !current.batimentIds.includes(bId)) : []
+  const removedIds = data.batimentIds ? current.batimentIds.filter((bId) => !newBatimentIds.includes(bId)) : []
+
+  const today = new Date().toISOString().split('T')[0]
+  const newEvaluations: EvaluationType[] = []
+
+  for (const batimentId of addedIds) {
+    const code = generateEvaluationCode(today)
+    const newEval: EvaluationType = {
+      id: `eval-camp-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      code,
+      batimentId,
+      campagneId: id,
+      date: today,
+      statut: 'brouillon',
+      anneeRef: current.anneeRef,
+    }
+    evaluationsData.push(newEval)
+    newEvaluations.push(newEval)
+  }
+
+  const newEvalIds = [...current.evaluationIds]
+  for (const batimentId of removedIds) {
+    const evalIdx = evaluationsData.findIndex((e) => e.batimentId === batimentId && e.campagneId === id)
+    if (evalIdx !== -1) {
+      const removedId = evaluationsData[evalIdx].id
+      evaluationsData[evalIdx] = { ...evaluationsData[evalIdx], campagneId: undefined }
+      const pos = newEvalIds.indexOf(removedId)
+      if (pos !== -1) newEvalIds.splice(pos, 1)
+    }
+  }
+  for (const ev of newEvaluations) newEvalIds.push(ev.id)
+
+  campagnesData[idx] = {
+    ...current,
+    ...(data.nom       !== undefined ? { nom:       data.nom }       : {}),
+    ...(data.statut    !== undefined ? { statut:    data.statut }    : {}),
+    ...(data.dateDebut !== undefined ? { dateDebut: data.dateDebut } : {}),
+    ...(data.dateFin   !== undefined ? { dateFin:   data.dateFin }   : {}),
+    batimentIds:   newBatimentIds,
+    evaluationIds: newEvalIds,
+  }
+  return { campagne: campagnesData[idx], newEvaluations }
+}
+
+export async function deleteCampagne(id: string): Promise<void> {
+  if (API_BASE) { await apiFetch(`/api/campagnes/${id}`, { method: 'DELETE' }); return }
+  const idx = campagnesData.findIndex((c) => c.id === id)
+  if (idx !== -1) campagnesData.splice(idx, 1)
 }
 
 // ─── Sections Fiche d'Identification ─────────────────────────────────────────

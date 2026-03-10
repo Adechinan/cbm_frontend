@@ -106,8 +106,9 @@ function RecensementModal({
 
   if (!recensement) return null
 
-  const isBrouillon = recensement.statut === 'brouillon'
-  const isEdit      = mode === 'edit'
+  const isBrouillon  = recensement.statut === 'brouillon'
+  const isEdit       = mode === 'edit'
+  const hasNonEvalue = editFonc.some((e) => e.etat === 'Non évalué') || editTech.some((e) => e.etat === 'Non évalué')
 
   // Index : elementId → { libelle, section, etatsDisponibles }
   const mapFonc = new Map(
@@ -223,15 +224,15 @@ function RecensementModal({
                     )
                   )
                 }}
-                onChangeNature={(critereId, elementId, value) => {
-                  setEditTech((prev) =>
-                    prev.map((x) =>
-                      x.critereId === critereId && x.elementId === elementId
-                        ? { ...x, nature: value }
-                        : x
-                    )
-                  )
-                }}
+                // onChangeNature={(critereId, elementId, value) => {
+                //   setEditTech((prev) =>
+                //     prev.map((x) =>
+                //       x.critereId === critereId && x.elementId === elementId
+                //         ? { ...x, nature: value }
+                //         : x
+                //     )
+                //   )
+                // }}
                 onChangeConstat={(critereId, elementId, value) => {
                   setEditTech((prev) =>
                     prev.map((x) =>
@@ -263,7 +264,7 @@ function RecensementModal({
         {isBrouillon && (
           <Button
             variant="success"
-            disabled={validating}
+            disabled={validating || hasNonEvalue}
             onClick={() => { onValider(recensement.id); onHide() }}
           >
             {validating

@@ -53,7 +53,7 @@ export default function RecensementForm({
       sec.elements
         .filter((e) => e.actif)
         .sort((a, b) => a.ordre - b.ordre)
-        .map((el) => ({ critereId: sec.id, elementId: el.id, nature: '', constat: '', etat: 'Non évalué' }))
+        .map((el) => ({ critereId: sec.id, elementId: el.id, nature: el.description??'', constat: '', etat: 'Non évalué' }))
     )
   )
 
@@ -213,15 +213,15 @@ export default function RecensementForm({
                         )
                       )
                     }}
-                    onChangeNature={(critereId, elementId, value) => {
-                      setEvalsTech((prev) =>
-                        prev.map((x) =>
-                          x.critereId === critereId && x.elementId === elementId
-                            ? { ...x, nature: value }
-                            : x
-                        )
-                      )
-                    }}
+                    // onChangeNature={(critereId, elementId, value) => {
+                    //   setEvalsTech((prev) =>
+                    //     prev.map((x) =>
+                    //       x.critereId === critereId && x.elementId === elementId
+                    //         ? { ...x, nature: value }
+                    //         : x
+                    //     )
+                    //   )
+                    // }}
                     onChangeConstat={(critereId, elementId, value) => {
                       setEvalsTech((prev) =>
                         prev.map((x) =>

@@ -142,14 +142,27 @@ const EvaluationForm = forwardRef<EvaluationFormHandle, Props>(function Evaluati
 
   // Pré-remplir la zone et auto-sélectionner le recensement validé le plus récent
   useEffect(() => {
-    const dept = initialData?.departementClimatique //batiments.find((b) => b.id === batimentId)?.departement
-    if (dept) setSelectedDept(dept)
+    if (initialData?.departementClimatique) {
+      setSelectedDept(initialData.departementClimatique)
+    } else {
+      const bat = batiments.find((b) => b.id === batimentId)
+      if (bat?.departementClimatique) {
+        let deptNom = ''
+        for (const z of zonesClimatiques) {
+          const d = z.departements.find((dep) => String(dep.id) === String(bat.departementClimatique))
+          if (d) { deptNom = d.nom; break }
+        }
+        setSelectedDept(deptNom)
+      } else {
+        setSelectedDept('')
+      }
+    }
     // Sélectionner automatiquement le recensement validé le plus récent du bâtiment
     const latest = recensements
       .filter((r) => r.batimentId === batimentId && r.statut === 'validé')
       .sort((a, b) => b.date.localeCompare(a.date))[0]
     setRecensementId(latest?.id ?? '')
-  }, [batimentId, batiments, recensements])
+  }, [batimentId, batiments, recensements]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const getDeptIdFromName = (deptName: string): string | undefined => {
     for (const zone of zonesClimatiques) {
@@ -331,7 +344,7 @@ const EvaluationForm = forwardRef<EvaluationFormHandle, Props>(function Evaluati
       if (onSaved) {
         onSaved(result)
       } else {
-        router.push('/evaluations')
+        router.push('/evaluations/campagnes')
       }
     } finally {
       setSaving(false)
@@ -349,8 +362,9 @@ const EvaluationForm = forwardRef<EvaluationFormHandle, Props>(function Evaluati
         <CardHeader className="d-flex align-items-center justify-content-between">
           <h5 className="card-title mb-0">Informations générales</h5>
           {editId ? (
-            <Link href="/evaluations" className="d-flex align-items-center gap-1 small">
-              —
+            <Link href="/evaluations/campagnes" className="d-flex align-items-center gap-1 small">
+              <IconifyIcon icon="tabler:arrow-back-up" />
+              Retour aux campagnes
             </Link>
           ) : (
             <Link href="/evaluations" className="d-flex align-items-center gap-1 small">
@@ -379,16 +393,16 @@ const EvaluationForm = forwardRef<EvaluationFormHandle, Props>(function Evaluati
             </Col>
             <Col md={3}>
               <Form.Label className="fw-medium">Date d&apos;évaluation</Form.Label>
-              <Form.Control type="date" value={date} max={new Date().toISOString().split('T')[0]} onChange={(e) => setDate(e.target.value)} />
+              <Form.Control type="date" value={date} max={new Date().toISOString().split('T')[0]} onChange={(e) => setDate(e.target.value)} disabled={editId != null} />
             </Col>
             <Col md={4}>
-              <Form.Label className="fw-medium">Évaluateur</Form.Label>
-              <Form.Control type="text" value={evaluateur} disabled />
+              {/* <Form.Label className="fw-medium">Évaluateur</Form.Label> */}
+              <Form.Control type="text" value={evaluateur} disabled hidden/>
             </Col>
             {batimentId && (
               <Col md={6}>
-                <Form.Label className="fw-medium">Recensement validé</Form.Label>
-                <Form.Select value={recensementId} onChange={(e) => setRecensementId(e.target.value)}>
+                <Form.Label className="fw-medium">Recensement validé le plus récent</Form.Label>
+                <Form.Select value={recensementId} onChange={(e) => setRecensementId(e.target.value)} disabled>
                   <option value="">— Aucun recensement —</option>
                   {recensementsValidsDuBatiment.map((r) => (
                     <option key={r.id} value={r.id}>
@@ -1332,7 +1346,11 @@ const EvaluationForm = forwardRef<EvaluationFormHandle, Props>(function Evaluati
                       <Row className="g-3 mb-3">
                         <Col md={4}>
                           <Form.Label className="fw-medium">Zone climatique (Département)</Form.Label>
-                          <Form.Select value={selectedDept} onChange={(e) => setSelectedDept(e.target.value)}>
+                          <Form.Select
+                            value={selectedDept}
+                            onChange={(e) => setSelectedDept(e.target.value)}
+                            disabled={!!batimentId}
+                          >
                             <option value="">— Sélectionner une zone —</option>
                             {zonesClimatiques
                               .slice()
@@ -1717,7 +1735,7 @@ const EvaluationForm = forwardRef<EvaluationFormHandle, Props>(function Evaluati
           style={{ position: 'sticky', bottom: 0, zIndex: 100, boxShadow: '0 -2px 8px rgba(0,0,0,.06)' }}
         >
           {/* <Button variant="light">Annuler</Button> */}
-          <Button variant="primary" onClick={handleSave} disabled={saving || !batimentId}>
+          <Button variant="primary" onClick={handleSave} disabled={saving || !batimentId } > 
             {saving
               ? <><span className="spinner-border spinner-border-sm me-1" />Enregistrement...</>
               : <><i className="tabler-device-floppy me-1" />Enregistrer l&apos;évaluation</>

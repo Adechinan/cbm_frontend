@@ -64,7 +64,7 @@ function groupByUsage(
 ): Array<{ usage: string; count: number; items: BatimentType[] }> {
   const map = new Map<string, BatimentType[]>()
   for (const b of batiments) {
-    for (const usage of b.usages ?? []) {
+    for (const usage of (Array.isArray(b.usages) ? b.usages : [])) {
       map.set(usage, [...(map.get(usage) ?? []), b])
     }
   }
