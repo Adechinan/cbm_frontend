@@ -39,7 +39,7 @@ const BasicEmailPage = () => {
                         </tr>
                         <tr style={{ fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif', boxSizing: 'border-box', fontSize: 14, margin: 0 }}>
                           <td className="content-block" style={{ fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif', boxSizing: 'border-box', fontSize: 14, verticalAlign: 'top', margin: 0, padding: '0 0 20px' }} valign="top">
-                            Thanks for choosing <b>Osen</b> Admin.
+                            Thanks for choosing <b>Approbations</b> Admin.
                           </td>
                         </tr>
                       </tbody></table>

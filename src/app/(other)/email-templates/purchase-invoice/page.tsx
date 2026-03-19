@@ -17,7 +17,7 @@ const PurchaseInvoicePage = () => {
                       <td className="content-block" style={{ fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif', boxSizing: 'border-box', fontSize: 14, verticalAlign: 'top', margin: 0, padding: '0 0 20px' }} valign="top">
                         <h2 className="aligncenter" style={{ fontFamily: '"Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif', boxSizing: 'border-box', fontSize: 24, color: '#000', lineHeight: '1.2em', fontWeight: 400, textAlign: 'center', margin: '40px 0 0' }} >
                           <a href="#" style={{ display: 'block', marginBottom: 10 }}> <Image src={logoDark} height={24} alt="logo" /></a> <br />
-                          Thanks for using Osen
+                          Thanks for using Approbations Admin Template
                         </h2>
                       </td>
                     </tr>

@@ -50,7 +50,7 @@ const ComingSoonPage = () => {
                 <Button variant='danger' className="d-inline-flex align-items-center justify-content-center rounded avatar-md "><span> <IconifyIcon icon='tabler:brand-youtube' className=" fs-20" /></span></Button>
               </div>
               <p className="mt-3 mb-0">
-                 {currentYear} © Osen - By <span className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">Coderthemes</span>
+                 {currentYear} © Entretien Batiments - By <span className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">Coderthemes</span>
               </p>
             </Card>
           </Col>

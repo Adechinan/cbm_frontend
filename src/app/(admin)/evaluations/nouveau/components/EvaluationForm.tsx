@@ -14,6 +14,7 @@ import {
   PonderationAleaType, RecensementType, TypeBatimentType, ZoneClimatiqueType,
 } from '@/types/entretien-batiment'
 import { saveEvaluation, updateEvaluation } from '@/services/batimentService'
+import { fmt } from '@/utils/evaluationCalcul'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { useRouter } from 'next/navigation'
 
@@ -35,6 +36,7 @@ type Props = {
   // Mode édition (depuis EvaluationList)
   initialData?: EvaluationType
   editId?: string
+  campagneCode?: string
   onSaved?: (e: EvaluationType) => void
   onCancel?: () => void
   onSavingChange?: (saving: boolean) => void
@@ -104,7 +106,7 @@ const getNoteAge = (age: number): number => {
 const EvaluationForm = forwardRef<EvaluationFormHandle, Props>(function EvaluationForm({
   batiments, recensements, criteresFonctionnels, criteresTechniques, typesBatiment, criteresEtatBatiment,
   zonesClimatiques, aleasClimatiques, cartoAlea, partiesOuvrage, ponderationsAlea,
-  initialData, editId, onSaved, onCancel, onSavingChange,
+  initialData, editId, campagneCode, onSaved, onCancel, onSavingChange,
 }, ref) {
   const { data: session } = useSession()
 
@@ -395,10 +397,22 @@ const EvaluationForm = forwardRef<EvaluationFormHandle, Props>(function Evaluati
               <Form.Label className="fw-medium">Date d&apos;évaluation</Form.Label>
               <Form.Control type="date" value={date} max={new Date().toISOString().split('T')[0]} onChange={(e) => setDate(e.target.value)} disabled={editId != null} />
             </Col>
-            <Col md={4}>
+            {campagneCode && (
+              <Col md={4}>
+                <Form.Label className="fw-medium">Campagne</Form.Label>
+                <div className="d-flex align-items-center gap-2">
+                  <Badge bg="primary" className="fs-6 px-3 py-2">{campagneCode}</Badge>
+                  {/* <Link href="/evaluations/campagnes" className="small text-muted">
+                    <IconifyIcon icon="tabler:external-link" className="me-1" />
+                    Voir la campagne
+                  </Link> */}
+                </div>
+              </Col>
+            )}
+            {/* <Col md={4}> */}
               {/* <Form.Label className="fw-medium">Évaluateur</Form.Label> */}
               <Form.Control type="text" value={evaluateur} disabled hidden/>
-            </Col>
+            {/* </Col> */}
             {batimentId && (
               <Col md={6}>
                 <Form.Label className="fw-medium">Recensement validé le plus récent</Form.Label>
@@ -1590,9 +1604,6 @@ const EvaluationForm = forwardRef<EvaluationFormHandle, Props>(function Evaluati
 
                   const urgence = cu >= 45 ? 'urgent' : cu >= 20 ? 'planifier' : 'ok'
 
-                  const fmt = (n: number) =>
-                    n.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
-
                   return (
                     <>
                       {!batimentId ? (
@@ -1735,7 +1746,12 @@ const EvaluationForm = forwardRef<EvaluationFormHandle, Props>(function Evaluati
           style={{ position: 'sticky', bottom: 0, zIndex: 100, boxShadow: '0 -2px 8px rgba(0,0,0,.06)' }}
         >
           {/* <Button variant="light">Annuler</Button> */}
-          <Button variant="primary" onClick={handleSave} disabled={saving || !batimentId } > 
+          <Button
+            variant="primary"
+            onClick={handleSave}
+            disabled={saving || !batimentId || initialData?.statut === 'validé'}
+            title={initialData?.statut === 'validé' ? 'Évaluation validée — modification impossible' : undefined}
+          >
             {saving
               ? <><span className="spinner-border spinner-border-sm me-1" />Enregistrement...</>
               : <><i className="tabler-device-floppy me-1" />Enregistrer l&apos;évaluation</>

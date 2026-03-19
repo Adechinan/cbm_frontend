@@ -2,10 +2,10 @@
 import React from 'react'
 // import logo from '@/assets/images/logo.png'
 import logo from '@/assets/images/logo-text.png'
-import logoSm from '@/assets/images/logo-sm.png'
-// import logoSm from '@/assets/images/logo-dgml.png'
-import logoDark from '@/assets/images/logo-dark.png'
-// import logoDark from '@/assets/images/logo-dgml.png'
+// import logoSm from '@/assets/images/logo-sm.png'
+import logoSm from '@/assets/images/logo-dgml.png'
+// import logoDark from '@/assets/images/logo-dark.png'
+import logoDark from '@/assets/images/logo-dgml.png'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -25,11 +25,11 @@ const customLogo = () => {
         y="58"
         fill="#ffffff"
         fontFamily="Arial Rounded MT Bold, Arial Rounded MT, Arial, sans-serif"
-        fontSize="50"
+        fontSize="45"
         fontWeight="700"
         letterSpacing="0.5"
       >
-        Ent. Bâtiments
+        Entretien Bâtiments
       </text>
       {/* <circle cx="11" cy="5" r="7" fill="#F97316" /> */}
     </svg>
@@ -39,12 +39,16 @@ const customLogo = () => {
 const LogoBox = () => {
   return (
     <Link href="/dashboard/entretien-batiment" className="logo">
+      {/* <div className="logo-light" style={{minHeight: '5px'}}>
+        {customLogo()}
+      </div> */}
       <span className="logo-light">
         {/* <span className="logo-lg">Entretien Bâtiments</span> */}
         {/* <span className="logo-lg">-</span> */}
-        {customLogo()}
+        {/* {customLogo()} */}
         {/* <span className="logo-lg"><Image src={logo} width={73} height={20} alt="logo" /></span> */}
-        {/* <span className="logo-sm"><Image src={logoSm} width={21} height={20} alt="small logo" /></span> */}
+        <span className="logo-lg" style={{marginTop: '10px', marginBottom: '20px'}}>{customLogo()}</span>
+        <span className="logo-sm"><Image src={logoSm} width={21} height={20} alt="small logo" /></span>
       </span>
       <span className="logo-dark">
         {/* {customLogo()} */}

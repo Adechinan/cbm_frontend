@@ -27,7 +27,7 @@ const NotFound = () => {
               <Link href="/dashboard/entretien-batiment" className="btn btn-primary">Retour à l'accueil <IconifyIcon icon='tabler:home' className="ms-1" /></Link>
             </div>
             {/* <p className="mt-3 mb-0">
-               {currentYear} © Osen - By <span className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">Coderthemes</span>
+               {currentYear} © Entretien Batiments - By <span className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">Coderthemes</span>
             </p> */}
           </Card>
         </Col>

@@ -1,6 +1,7 @@
 /* Konrad Ahodan : konrad.ahodan@approbations.ca */
 import { Badge, Card, CardBody, CardHeader, Table } from 'react-bootstrap'
 import { BatimentType, EvaluationType } from '@/types/entretien-batiment'
+import { fmt } from '@/utils/evaluationCalcul'
 
 type Props = {
   batiments: BatimentType[]
@@ -50,14 +51,14 @@ export default function SyntheseTable({ batiments, evaluations }: Props) {
                   </td>
                   <td className="text-muted">{b.organisme}</td>
                   <td className="text-muted">{b.departement}</td>
-                  <td className="text-end">{(b.surfaceTotale ?? 0).toLocaleString('fr-FR')}</td>
+                  <td className="text-end">{fmt(b.surfaceTotale ?? 0)}</td>
                   <td className="text-center text-muted">{evs.length}</td>
                   <td className="text-center"><NoteCell value={latest?.notePhysique} /></td>
                   <td className="text-center"><NoteCell value={latest?.noteFonctionnelle} /></td>
                   <td className="text-center"><NoteCell value={latest?.noteTechnique} /></td>
                   <td className="text-end">
                     {latest?.coutGlobal != null
-                      ? <span className="text-nowrap fw-medium">{latest.coutGlobal.toLocaleString('fr-FR')}</span>
+                      ? <span className="text-nowrap fw-medium">{fmt(latest.coutGlobal)}</span>
                       : <span className="text-muted">—</span>
                     }
                   </td>

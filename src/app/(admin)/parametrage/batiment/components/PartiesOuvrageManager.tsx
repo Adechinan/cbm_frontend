@@ -5,14 +5,17 @@ import { useState } from 'react'
 import { Button, Card, CardBody, CardHeader, Table } from 'react-bootstrap'
 import { PartieOuvrageType } from '@/types/entretien-batiment'
 import { deletePartieOuvrage } from '@/services/batimentService'
+import { fmt } from '@/utils/evaluationCalcul'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import PartieOuvrageModal from './PartieOuvrageModal'
+import { usePrivileges } from '@/hooks/usePrivileges'
 
 type Props = {
   partiesInit: PartieOuvrageType[]
 }
 
 export default function PartiesOuvrageManager({ partiesInit }: Props) {
+  const priv = usePrivileges()
   const [parties,   setParties]   = useState<PartieOuvrageType[]>(partiesInit)
   const [showModal, setShowModal] = useState(false)
   const [editItem,  setEditItem]  = useState<PartieOuvrageType | null>(null)
@@ -33,7 +36,6 @@ export default function PartiesOuvrageManager({ partiesInit }: Props) {
   }
 
   const sorted = [...parties].sort((a, b) => a.ordre - b.ordre)
-  console.log('Parties d\'ouvrage chargées :', sorted)
 
   return (
     <>
@@ -45,13 +47,15 @@ export default function PartiesOuvrageManager({ partiesInit }: Props) {
               Ces parties sont utilisées dans la pondération des aléas climatiques.
             </p>
           </div>
-          <Button
-            variant="success"
-            size="sm"
-            onClick={() => { setEditItem(null); setShowModal(true) }}
-          >
-            <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter
-          </Button>
+          {priv.canEditSettings && (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => { setEditItem(null); setShowModal(true) }}
+            >
+              <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter
+            </Button>
+          )}
         </CardHeader>
         <CardBody className="p-0">
           <div style={{ overflowX: 'auto' }}>
@@ -77,20 +81,22 @@ export default function PartiesOuvrageManager({ partiesInit }: Props) {
                   <tr key={p.id}>
                     <td className="ps-3 text-muted">{p.ordre}</td>
                     <td className="fw-medium" style={{ fontSize: '0.85rem' }}>{p.nom}</td>
-                    <td className="text-center">{p.superficie.toLocaleString('fr-FR')}</td>
+                    <td className="text-center">{fmt(p.superficie)}</td>
                     <td className="text-center">{p.prixUnitaireRef}</td>
-                    <td className="text-center fw-semibold">{p.prixUnitaire.toLocaleString('fr-FR')}</td>
+                    <td className="text-center fw-semibold">{fmt(p.prixUnitaire)}</td>
                     <td className="text-center pe-3">
                       <div className="hstack gap-1 justify-content-center">
-                        <Button
-                          variant="soft-success"
-                          size="sm"
-                          className="btn-icon rounded-circle"
-                          onClick={() => { setEditItem(p); setShowModal(true) }}
-                          title="Modifier"
-                        >
-                          <IconifyIcon icon="tabler:edit" />
-                        </Button>
+                        {priv.canEditSettings && (
+                          <Button
+                            variant="soft-success"
+                            size="sm"
+                            className="btn-icon rounded-circle"
+                            onClick={() => { setEditItem(p); setShowModal(true) }}
+                            title="Modifier"
+                          >
+                            <IconifyIcon icon="tabler:edit" />
+                          </Button>
+                        )}
                         {/* <Button
                           variant="soft-danger"
                           size="sm"

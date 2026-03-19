@@ -23,7 +23,7 @@ const TC_ENUM_TO_LABEL: Record<string, string> = {
 // ─── Clés "connues" de BatimentType (tout le reste → extra) ───────────────
 
 const KNOWN_KEYS = new Set([
-  'code', 'codeBatiment', 'denomination', 'organisme', 'modeAcquisition',
+  'code', 'codeBatiment', 'codeLiaison', 'denomination', 'organisme', 'modeAcquisition',
   'anneeConstruction', 'anneesRestructuration', 'coutConstruction', 'statutConstruction',
   'departement', 'commune', 'arrondissement', 'adresse', 'latitude', 'longitude',
   'departementClimatique',
@@ -65,6 +65,7 @@ function buildEmptyForm(champs: ChampFicheType[]): DynForm {
 function batimentToForm(b: BatimentType, champs: ChampFicheType[]): DynForm {
   const form = buildEmptyForm(champs)
   form['codeBatiment'] = b.codeBatiment ?? ''
+  form['codeLiaison'] = b.codeLiaison ?? ''
   form['denomination'] = b.denomination
   form['organisme'] = b.organisme
   form['modeAcquisition'] = b.modeAcquisition
@@ -118,6 +119,7 @@ function formToBatiment(f: DynForm): Omit<BatimentType, 'id'> {
     code: '',           // auto-généré par le backend (BAT-YYYY-XXXX)
     sections: [],       // géré par le backend
     codeBatiment: str('codeBatiment'),
+    codeLiaison: str('codeLiaison'),
     denomination: str('denomination'),
     organisme: str('organisme'),
     modeAcquisition: str('modeAcquisition'),

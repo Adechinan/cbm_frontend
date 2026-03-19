@@ -47,6 +47,7 @@ export const options: NextAuthOptions = {
             mustResetPassword?: boolean
             name?: string
             email?: string
+            privileges?: Record<string, boolean>
           }
 
           if (loginData.mustResetPassword) {
@@ -88,6 +89,7 @@ export const options: NextAuthOptions = {
             email: loginData.email ?? credentials.email,
             name: loginData.name ?? credentials.email,
             apiToken: loginData.token,
+            privileges: loginData.privileges ?? {},
           }
         }
 
@@ -96,7 +98,12 @@ export const options: NextAuthOptions = {
           (u) => u.email === credentials.email && u.password === credentials.password
         )
         if (!user) throw new Error('Email ou mot de passe incorrect')
-        return { id: user.id, email: user.email, name: user.username, apiToken: user.token }
+        // Mode mock : accordez tous les droits au démo
+        const mockPrivileges = {
+          canConsult: true, canCreate: true, canValidate: true,
+          canAccessSettings: true, canEditSettings: true, canAccessAll: true,
+        }
+        return { id: user.id, email: user.email, name: user.username, apiToken: user.token, privileges: mockPrivileges }
       },
     }),
   ],
@@ -106,14 +113,18 @@ export const options: NextAuthOptions = {
   pages: { signIn: '/auth/login' },
 
   callbacks: {
-    // Persiste le token Laravel dans le JWT NextAuth
+    // Persiste le token et les privilèges Laravel dans le JWT NextAuth
     async jwt({ token, user }) {
-      if (user) token.apiToken = (user as { apiToken?: string }).apiToken ?? ''
+      if (user) {
+        token.apiToken   = (user as { apiToken?: string }).apiToken ?? ''
+        token.privileges = (user as { privileges?: Record<string, boolean> }).privileges ?? {}
+      }
       return token
     },
-    // Expose le token dans la session côté serveur
+    // Expose le token et les privilèges dans la session côté client/serveur
     async session({ session, token }) {
-      ;(session as { apiToken?: string }).apiToken = (token.apiToken as string) ?? ''
+      ;(session as { apiToken?: string }).apiToken     = (token.apiToken as string) ?? ''
+      ;(session as { privileges?: Record<string, boolean> }).privileges = (token.privileges as Record<string, boolean>) ?? {}
       return session
     },
   },

@@ -95,6 +95,7 @@ export default function TypeBatimentModal({ show, onHide, type, onSaved }: Props
               placeholder="Ex : Bâtiment Administratif"
               {...register('nom')}
               isInvalid={!!errors.nom}
+              disabled
             />
             <Form.Control.Feedback type="invalid">{errors.nom?.message}</Form.Control.Feedback>
           </div>
@@ -162,6 +163,7 @@ export default function TypeBatimentModal({ show, onHide, type, onSaved }: Props
                 id="actif-switch"
                 label="Type actif"
                 {...register('actif')}
+                disabled
               />
             </Col>
           </Row>

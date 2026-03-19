@@ -18,7 +18,7 @@ const Error404AltPage = () => {
         <Col lg={4}>
           <div className="text-center">
             <Image src={Error404Alt} height={230} alt="File not found Image" />
-            <h4 className="text-uppercase text-danger mt-3">Page Not Found</h4>
+            <h4 className="text-uppercase text-danger mt-3">Page introuvable</h4>
             <p className="text-muted mt-3">Il semble que vous ayez pris le mauvais chemin. Ne vous inquiétez pas..
               Cela arrive aux meilleurs d'entre nous. Voici un
               petit conseil qui pourrait vous aider à vous remettre sur la bonne voie.

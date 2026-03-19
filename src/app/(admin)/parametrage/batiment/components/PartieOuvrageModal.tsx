@@ -2,7 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
+import { Alert, Button, Col, Form, Modal, Row } from 'react-bootstrap'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -12,7 +12,9 @@ import { createPartieOuvrage, updatePartieOuvrage } from '@/services/batimentSer
 const schema = yup.object({
   nom:             yup.string().required('Le nom est obligatoire'),
   superficie:      yup.number().required('La superficie est obligatoire').min(0),
-  prixUnitaireRef: yup.string().required('La fourchette de prix est obligatoire'),
+  prixUnitaireRef: yup.string()
+    .required('La fourchette de prix est obligatoire')
+    .matches(/^\d+(-\d+)?$/, 'Format invalide — entrez un nombre ("150") ou une tranche ("150-400")'),
   prixUnitaire:    yup.number().required('Le prix unitaire est obligatoire').min(0),
   ordre:           yup.number().required("L'ordre est obligatoire").min(1),
 })
@@ -29,6 +31,7 @@ type Props = {
 export default function PartieOuvrageModal({ show, onHide, partie, onSaved }: Props) {
   const isEdit = !!partie
   const [loading, setLoading] = useState(false)
+  const [apiError, setApiError] = useState<string | null>(null)
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
     resolver: yupResolver(schema),
@@ -37,6 +40,7 @@ export default function PartieOuvrageModal({ show, onHide, partie, onSaved }: Pr
 
   useEffect(() => {
     if (!show) return
+    setApiError(null)
     reset(partie
       ? {
           nom:             partie.nom,
@@ -51,11 +55,14 @@ export default function PartieOuvrageModal({ show, onHide, partie, onSaved }: Pr
 
   const onSubmit = async (values: FormValues) => {
     setLoading(true)
+    setApiError(null)
     try {
       const saved = isEdit && partie
         ? await updatePartieOuvrage(partie.id, values)
         : await createPartieOuvrage(values as Omit<PartieOuvrageType, 'id'>)
       onSaved(saved)
+    } catch (err) {
+      setApiError(err instanceof Error ? err.message : 'Une erreur est survenue lors de l\'enregistrement.')
     } finally {
       setLoading(false)
     }
@@ -70,6 +77,7 @@ export default function PartieOuvrageModal({ show, onHide, partie, onSaved }: Pr
       </Modal.Header>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
+          {apiError && <Alert variant="danger" className="mb-3">{apiError}</Alert>}
           <Row className="g-3">
             <Col xs={12}>
               <Form.Label className="fw-medium">

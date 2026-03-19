@@ -40,13 +40,13 @@ export default function CritereEtatBatimentManager({ criteresInit }: Props) {
       <Card>
         <CardHeader className="d-flex align-items-center justify-content-between">
           <h5 className="card-title mb-0">Pondération des critères d'états de bâtiment</h5>
-          <Button
-            variant="success"
+          {/* <Button
+            variant="primary"
             size="sm"
             onClick={() => { setEditItem(null); setShowModal(true) }}
           >
             <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter
-          </Button>
+          </Button> */}
         </CardHeader>
         <CardBody className="p-0">
           <Table hover className="align-middle mb-0 table-sm">

@@ -13,7 +13,7 @@ export const typesBatimentData: TypeBatimentType[] = [
 // ─── Critères d'état de bâtiment ─────────────────────────────────────────────
 
 export const criteresEtatBatimentData: CritereEtatBatimentType[] = [
-  { id: 'ceb-01', nom: 'Age du bâtiment',  ponderation: 30, ordre: 1 },
+  { id: 'ceb-01', nom: 'Etat Physique',  ponderation: 30, ordre: 1 },
   { id: 'ceb-02', nom: 'Etat Technique',   ponderation: 45, ordre: 2 },
   { id: 'ceb-03', nom: 'Etat Fonctionnel', ponderation: 25, ordre: 3 },
 ]
@@ -28,10 +28,11 @@ export const sectionsFicheData: SectionFicheType[] = [
       { id: 'ch-01', sectionId: 'sec-01', libelle: "Organisme d'appartenance",  type: 'Texte',  obligatoire: true,  actif: true, ordre: 1, fieldKey: 'organisme' },
       { id: 'ch-02', sectionId: 'sec-01', libelle: 'Dénomination du site',       type: 'Texte',  obligatoire: true,  actif: true, ordre: 2, fieldKey: 'denomination' },
       { id: 'ch-03', sectionId: 'sec-01', libelle: 'Code du bâtiment',           type: 'Texte',  obligatoire: true,  actif: true, ordre: 3, fieldKey: 'codeBatiment' },
+      { id: 'ch-03b', sectionId: 'sec-01', libelle: 'Code Liaison',              type: 'Texte',  obligatoire: false, actif: true, ordre: 5, fieldKey: 'codeLiaison' },
       { id: 'ch-04', sectionId: 'sec-01', libelle: "Mode d'acquisition",         type: 'Select', obligatoire: false, actif: true, ordre: 4, fieldKey: 'modeAcquisition',
         options: ['État', 'Privé', 'Mixte'] },
     ],
-  },
+  }, 
   // ── Données historiques ───────────────────────────────────────────────────
   {
     id: 'sec-02', libelle: 'Données historiques', obligatoire: false, actif: true, ordre: 2,
@@ -370,6 +371,7 @@ export const batimentsData: BatimentType[] = [
     id: 'bat-01',
     code: 'BAT-2024-0001',
     codeBatiment: 'HVC-001',
+    codeLiaison: 'HVC-001',
     sections: [],
     denomination: 'Hôtel de Ville de Cotonou',
     organisme: 'Mairie de Cotonou',
@@ -398,6 +400,7 @@ export const batimentsData: BatimentType[] = [
     id: 'bat-02',
     code: 'BAT-2024-0002',
     codeBatiment: 'PREF-ZOU-001',
+    codeLiaison: 'PREF-ZOU-001',
     sections: [],
     denomination: 'Préfecture du Zou',
     organisme: 'Préfecture du Zou',
@@ -617,18 +620,18 @@ export const cartoAleaData: CartoAleaType[] = cartoDepts.flatMap(([deptNom, nive
 // ─── Parties d'ouvrage ────────────────────────────────────────────────────────
 
 export const partiesOuvrageData: PartieOuvrageType[] = [
-  { id: 'po-01', nom: 'Gros œuvre (structure, maçonnerie)',                       superficie: 1000, prixUnitaireRef: '150-400',   prixUnitaire: 300,  ordre: 1  },
-  { id: 'po-02', nom: 'Toiture / Couverture / Etanchéité',                       superficie: 1000, prixUnitaireRef: '550-850',   prixUnitaire: 750,  ordre: 2  },
-  { id: 'po-03', nom: 'Menuiseries extérieures',                                  superficie: 1000, prixUnitaireRef: '550-950',   prixUnitaire: 850,  ordre: 3  },
-  { id: 'po-04', nom: 'Second Œuvre',                                             superficie: 1000, prixUnitaireRef: '650-1050',  prixUnitaire: 900,  ordre: 4  },
-  { id: 'po-05', nom: 'Plomberie sanitaire',                                      superficie: 1000, prixUnitaireRef: '1050-1550', prixUnitaire: 1350, ordre: 5  },
-  { id: 'po-06', nom: 'CFO',                                                      superficie: 1000, prixUnitaireRef: '1200-1800', prixUnitaire: 1550, ordre: 6  },
-  { id: 'po-07', nom: 'CFA',                                                      superficie: 1000, prixUnitaireRef: '1400-1900', prixUnitaire: 1650, ordre: 7  },
-  { id: 'po-08', nom: 'Ventilation',                                              superficie: 1000, prixUnitaireRef: '700-1150',  prixUnitaire: 800,  ordre: 8  },
-  { id: 'po-09', nom: 'Climatisation (split / centrale)',                         superficie: 1000, prixUnitaireRef: '750-1250',  prixUnitaire: 850,  ordre: 9  },
-  { id: 'po-10', nom: 'Façade (peinture extérieure, bardage, revêtement)',        superficie: 1000, prixUnitaireRef: '250-800',   prixUnitaire: 500,  ordre: 10 },
-  { id: 'po-11', nom: 'Peinture Intérieure (mur, plafond, ménuiseries)',          superficie: 1000, prixUnitaireRef: '300-750',   prixUnitaire: 400,  ordre: 11 },
-  { id: 'po-12', nom: 'VRD',                                                      superficie: 1000, prixUnitaireRef: '300-650',   prixUnitaire: 400,  ordre: 12 },
+  { id: 'po-01', nom: 'Gros œuvre (structure, maçonnerie)',                       superficie: 1000, prixUnitaireRef: "150-400",   prixUnitaire: 300,  ordre: 1  },
+  { id: 'po-02', nom: 'Toiture / Couverture / Etanchéité',                       superficie: 1000, prixUnitaireRef: "550-850",   prixUnitaire: 750,  ordre: 2  },
+  { id: 'po-03', nom: 'Menuiseries extérieures',                                  superficie: 1000, prixUnitaireRef: "550-950",   prixUnitaire: 850,  ordre: 3  },
+  { id: 'po-04', nom: 'Second Œuvre',                                             superficie: 1000, prixUnitaireRef: "650-1050",  prixUnitaire: 900,  ordre: 4  },
+  { id: 'po-05', nom: 'Plomberie sanitaire',                                      superficie: 1000, prixUnitaireRef: "1050-1550", prixUnitaire: 1350, ordre: 5  },
+  { id: 'po-06', nom: 'CFO',                                                      superficie: 1000, prixUnitaireRef: "1200-1800", prixUnitaire: 1550, ordre: 6  },
+  { id: 'po-07', nom: 'CFA',                                                      superficie: 1000, prixUnitaireRef: "1400-1900", prixUnitaire: 1650, ordre: 7  },
+  { id: 'po-08', nom: 'Ventilation',                                              superficie: 1000, prixUnitaireRef: "700-1150",  prixUnitaire: 800,  ordre: 8  },
+  { id: 'po-09', nom: 'Climatisation (split / centrale)',                         superficie: 1000, prixUnitaireRef: "750-1250",  prixUnitaire: 850,  ordre: 9  },
+  { id: 'po-10', nom: 'Façade (peinture extérieure, bardage, revêtement)',        superficie: 1000, prixUnitaireRef: "250-800",   prixUnitaire: 500,  ordre: 10 },
+  { id: 'po-11', nom: 'Peinture Intérieure (mur, plafond, ménuiseries)',          superficie: 1000, prixUnitaireRef: "300-750",   prixUnitaire: 400,  ordre: 11 },
+  { id: 'po-12', nom: 'VRD',                                                      superficie: 1000, prixUnitaireRef: "300-650",   prixUnitaire: 400,  ordre: 12 },
 ]
 
 // ─── Pondérations Aléas — scores (Expo, Sens, Imp) × partie × aléa ───────────

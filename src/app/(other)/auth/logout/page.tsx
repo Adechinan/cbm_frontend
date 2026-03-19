@@ -42,7 +42,7 @@ const LogoutPage = () => {
                 Retour à <Link href="/auth/login" className="text-dark fw-semibold ms-1">Connexion !</Link>
               </p>
               {/* <p className="mt-auto mb-0">
-                 {currentYear} © Osen - By <span className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">{developedBy}</span>
+                 {currentYear} © Entretien batiments - By <span className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">{developedBy}</span>
               </p> */}
             </Card>
           </Col>

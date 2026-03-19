@@ -39,7 +39,7 @@ const AccountActivationPage = () => {
                       </tr>
                       <tr style={{ fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif', boxSizing: 'border-box', fontSize: 14, margin: 0 }}>
                         <td className="content-block" style={{ fontFamily: '"Helvetica Neue",Helvetica,Arial,sans-serif', boxSizing: 'border-box', fontSize: 14, verticalAlign: 'top', margin: 0, padding: '0 0 20px' }} valign="top">
-                          — <b>Osen</b> - Admin Dashboard
+                          — <b>Approbations</b> - Admin Dashboard
                         </td>
                       </tr>
                     </tbody></table>

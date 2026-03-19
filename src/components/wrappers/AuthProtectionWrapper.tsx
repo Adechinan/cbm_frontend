@@ -2,7 +2,7 @@
 'use client'
 import { signOut, useSession } from 'next-auth/react'
 import { usePathname, useRouter } from 'next/navigation'
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 
 import type { ChildrenType } from '@/types/component-props'
 import FallbackLoading from '../FallbackLoading'
@@ -13,6 +13,14 @@ const AuthProtectionWrapper = ({ children }: ChildrenType) => {
   const { data: session, status } = useSession()
   const { push } = useRouter()
   const pathname = usePathname()
+
+  // Si un token est déjà en localStorage, l'utilisateur était authentifié :
+  // on évite le spinner pendant la vérification de session (navigations rapides).
+  // Initialisé à false pour que le rendu serveur et client soient identiques (hydratation).
+  const [hadToken, setHadToken] = useState(false)
+  useEffect(() => {
+    setHadToken(!!localStorage.getItem('api_token'))
+  }, [])
 
   // Synchronise le token Laravel dans localStorage
   useEffect(() => {
@@ -53,7 +61,8 @@ const AuthProtectionWrapper = ({ children }: ChildrenType) => {
     }
   }, [status])
 
-  if (status === 'loading' || status === 'unauthenticated') {
+  // Bloquer uniquement si : chargement initial sans token connu, ou non authentifié
+  if (status === 'unauthenticated' || (status === 'loading' && !hadToken)) {
     return <FallbackLoading />
   }
 

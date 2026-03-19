@@ -1,0 +1,81 @@
+when:
+  branch:
+    - main
+    - develop
+  event:
+    - push
+
+steps:
+  - name: set-env
+    image: alpine
+    commands:
+      - echo "BRANCH_NAME=$(echo \"$CI_COMMIT_BRANCH\" | sed 's|/|-|g')" > .env
+      - TIMESTAMP=$(date '+%Y-%m-%d-%Hh%M')
+      - echo "TIMESTAMP=$TIMESTAMP" >> .env
+      - echo "IMAGE_TAG=${CI_COMMIT_BRANCH//\//-}" >> .env
+      - echo "IMAGE_NAME=git.topsystem-group.com/topsystem/entretien-frontend:${CI_COMMIT_BRANCH//\//-}" >> .env
+      - echo "CONTAINER_NAME=entretien-frontend-${CI_COMMIT_BRANCH//\//-}" >> .env
+      # Port selon la branche : main=3000, develop=3001
+      - |
+        if [ "$CI_COMMIT_BRANCH" = "main" ]; then
+          echo "PORT=3000" >> .env
+        elif [ "$CI_COMMIT_BRANCH" = "develop" ]; then
+          echo "PORT=3001" >> .env
+        fi
+      - cat .env
+
+  - name: build
+    image: docker:24
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - source .env || true
+      - |
+        echo "[Étape 2] Build de l'image Docker : $IMAGE_NAME"
+        docker build -f docker/Dockerfile \
+          --build-arg NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL}" \
+          -t "$IMAGE_NAME" .
+    environment:
+      NEXT_PUBLIC_API_URL:
+        from_secret: next_public_api_url
+
+  - name: push
+    image: docker:24
+    environment:
+      DOCKER_USERNAME:
+        from_secret: docker_username
+      DOCKER_PASSWORD:
+        from_secret: docker_password
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - source .env || true
+      - |
+        echo "[Étape 3] Login au registre Docker de Gitea..."
+        echo "$DOCKER_PASSWORD" | docker login git.topsystem-group.com -u "$DOCKER_USERNAME" --password-stdin
+
+        echo "[Étape 3] Push de l'image Docker : $IMAGE_NAME"
+        docker push "$IMAGE_NAME"
+
+  - name: deploy
+    image: docker:24
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - source .env || true
+      - |
+        echo "[Étape 4] Déploiement de l'image..."
+
+        echo "Suppression de l'ancien conteneur (s'il existe)..."
+        docker stop "$CONTAINER_NAME" || true
+        docker rm -f "$CONTAINER_NAME" || true
+
+        echo "Lancement du conteneur : $CONTAINER_NAME sur le port $PORT"
+        docker run -d \
+          --name "$CONTAINER_NAME" \
+          -p "$PORT:3000" \
+          --restart unless-stopped \
+          "$IMAGE_NAME"
+
+        echo "Conteneur démarré avec succès !"
+        docker ps | grep "$CONTAINER_NAME"
