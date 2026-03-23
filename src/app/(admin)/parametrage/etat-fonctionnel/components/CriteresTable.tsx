@@ -78,7 +78,7 @@ export default function CriteresTable({ criteres: init }: Props) {
             {totalPondSections} %
           </Badge>
         </div>
-        <Button variant="success" size="sm" onClick={() => { setEditSection(null); setShowSectionModal(true) }}>
+        <Button variant="primary" size="sm" onClick={() => { setEditSection(null); setShowSectionModal(true) }}>
           <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter une section
         </Button>
       </div>

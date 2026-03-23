@@ -172,7 +172,7 @@ export default function CartoAleasManager({ zonesInit, aleasInit, cartoInit }: P
                   Définissez les zones et les départements qu&apos;elles couvrent.
                 </p>
               </div>
-              <Button variant="success" size="sm" onClick={() => { setEditZone(null); setZoneModal(true) }}>
+              <Button variant="primary" size="sm" onClick={() => { setEditZone(null); setZoneModal(true) }}>
                 <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter
               </Button>
             </CardHeader>
@@ -226,7 +226,7 @@ export default function CartoAleasManager({ zonesInit, aleasInit, cartoInit }: P
                 <h5 className="card-title mb-0">Aléas climatiques</h5>
                 <p className="text-muted small mb-0 mt-1">Types de risques évalués.</p>
               </div>
-              <Button variant="success" size="sm" onClick={() => { setEditAlea(null); setAleaModal(true) }}>
+              <Button variant="primary" size="sm" onClick={() => { setEditAlea(null); setAleaModal(true) }}>
                 <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter
               </Button>
             </CardHeader>

@@ -1,6 +1,7 @@
 /* Konrad Ahodan : konrad.ahodan@approbations.ca */
 import { Card, CardBody, Col, Row } from 'react-bootstrap'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
+import { fmt } from '@/utils/evaluationCalcul'
 
 type Props = {
   totalBatiments: number
@@ -19,7 +20,7 @@ export default function StatCards({ totalBatiments, totalSurface, evaluationsVal
     },
     {
       label: 'Surface totale (m²)',
-      value: totalSurface.toLocaleString('fr-FR'),
+      value: fmt(totalSurface),
       icon: 'tabler:ruler-measure',
       variant: 'info',
     },

@@ -193,7 +193,7 @@ export default function PonderationManager({
               La somme des poids doit être égale à&nbsp;1.
             </p>
           </div>
-          <Button variant="success" size="sm" onClick={() => { setEditCritere(null); setCritereModal(true) }}>
+          <Button variant="primary" size="sm" onClick={() => { setEditCritere(null); setCritereModal(true) }}>
             <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter
           </Button>
         </CardHeader>

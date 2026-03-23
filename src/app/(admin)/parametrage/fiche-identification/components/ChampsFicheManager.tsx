@@ -87,7 +87,7 @@ export default function ChampsFicheManager({ sectionsInitiales }: Props) {
     <>
       {/* Bouton global Ajouter */}
       <div className="d-flex justify-content-end mb-3">
-        <Button variant="success" size="sm" onClick={() => openAddModal()}>
+        <Button variant="primary" size="sm" onClick={() => openAddModal()}>
           <IconifyIcon icon="tabler:plus" style={{ fontSize: '0.8rem' }} className="me-1" /> Ajouter un champ
         </Button>
       </div>

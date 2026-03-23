@@ -27,7 +27,8 @@ import {
   updateEvaluation,
   validerEvaluation,
 } from '@/services/batimentService'
-import { computeEvaluation } from '@/utils/evaluationCalcul'
+import { computeEvaluation, fmt } from '@/utils/evaluationCalcul'
+import { usePrivileges } from '@/hooks/usePrivileges'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import EvaluationForm, { EvaluationFormHandle } from '@/app/(admin)/evaluations/nouveau/components/EvaluationForm'
 
@@ -48,9 +49,6 @@ const EVAL_STATUT_BG: Record<string, string> = {
 const CU_BG = (cu: number) => cu >= 45 ? 'danger' : cu >= 20 ? 'warning' : 'success'
 
 const NOTE_BG = (n: number) => n >= 2 ? 'success' : n >= 1 ? 'warning' : 'danger'
-
-const fmt = (n: number) =>
-  n.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
 
 const PAGE_SIZE = 10
 
@@ -89,6 +87,7 @@ export default function CampagneManager({
   partiesOuvrage,
   ponderationsAlea,
 }: Props) {
+  const priv = usePrivileges()
   const [campagnes, setCampagnes]     = useState<CampagneType[]>(campagnesInit)
   const [evalsList, setEvalsList]     = useState<EvaluationType[]>(evaluationsInit)
   const [page, setPage]               = useState(1)
@@ -354,10 +353,12 @@ export default function CampagneManager({
               {campagnes.length} campagne{campagnes.length !== 1 ? 's' : ''}
             </Badge>
           </div>
-          <Button variant="primary" size="sm" onClick={openCreate}>
-            <IconifyIcon icon="tabler:plus" className="me-1" />
-            Nouvelle campagne
-          </Button>
+          {priv.canCreate && (
+            <Button variant="primary" size="sm" onClick={openCreate}>
+              <IconifyIcon icon="tabler:plus" className="me-1" />
+              Nouvelle campagne
+            </Button>
+          )}
         </CardHeader>
 
         <CardBody className="p-0">
@@ -768,6 +769,17 @@ export default function CampagneManager({
                       )
                     })}
                   </tbody>
+                  <tfoot>
+                    <tr className="table-primary">
+                      <td colSpan={5} className="text-end fw-bold pe-3">
+                        Coût total estimé de la campagne
+                      </td>
+                      <td className="text-center fw-bold">
+                        {fmt(evals.reduce((sum, e) => sum + (e.coutGlobal ?? 0), 0))} FCFA
+                      </td>
+                      <td colSpan={2} />
+                    </tr>
+                  </tfoot>
                 </Table>
               </div>
             )
@@ -888,7 +900,7 @@ export default function CampagneManager({
         </Modal.Body>
         <Modal.Footer>
           <Button variant="light" onClick={() => setEvalViewModal(null)}>Fermer</Button>
-          {evalViewModal?.statut === 'brouillon' && (
+          {evalViewModal?.statut === 'brouillon' && priv.canValidate && (
             <Button
               variant="success"
               disabled={validating === evalViewModal?.id}
@@ -934,12 +946,14 @@ export default function CampagneManager({
         </Modal.Body>
         <Modal.Footer className="border-top">
           <Button variant="light" onClick={() => setEvalEditModal(null)}>Annuler</Button>
-          <Button variant="primary" disabled={formSaving} onClick={() => formRef.current?.save()}>
-            {formSaving
-              ? <><span className="spinner-border spinner-border-sm me-1" />Enregistrement...</>
-              : <><IconifyIcon icon="tabler:device-floppy" className="me-1" />Enregistrer</>}
-          </Button>
-          {evalEditModal?.statut === 'brouillon' && (
+          {priv.canCreate && (
+            <Button variant="primary" disabled={formSaving} onClick={() => formRef.current?.save()}>
+              {formSaving
+                ? <><span className="spinner-border spinner-border-sm me-1" />Enregistrement...</>
+                : <><IconifyIcon icon="tabler:device-floppy" className="me-1" />Enregistrer</>}
+            </Button>
+          )}
+          {evalEditModal?.statut === 'brouillon' && priv.canValidate && (
             <Button
               variant="success"
               disabled={validating === evalEditModal?.id}

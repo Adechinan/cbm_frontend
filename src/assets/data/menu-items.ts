@@ -38,18 +38,18 @@ export const MENU_ITEMS: MenuItemType[] = [
     label: 'Évaluation',
     icon: 'tabler:clipboard-check',
     children: [
-      {
-        key: 'evaluation-liste',
-        label: 'Liste des évaluations',
-        url: '/evaluations',
-        parentKey: 'apps-evaluation',
-      },
-      {
-        key: 'evaluation-nouveau',
-        label: 'Nouvelle évaluation',
-        url: '/evaluations/nouveau',
-        parentKey: 'apps-evaluation',
-      },
+      // {
+      //   key: 'evaluation-liste',
+      //   label: 'Liste des évaluations',
+      //   url: '/evaluations',
+      //   parentKey: 'apps-evaluation',
+      // },
+      // {
+      //   key: 'evaluation-nouveau',
+      //   label: 'Nouvelle évaluation',
+      //   url: '/evaluations/nouveau',
+      //   parentKey: 'apps-evaluation',
+      // },
       {
         key: 'evaluation-campagnes',
         label: 'Campagnes',
@@ -178,48 +178,6 @@ export const MENU_ITEMS: MenuItemType[] = [
         url: '/administration/system',
         parentKey: 'app-admin-users-roles',
       },
-      // {
-      //   key: 'product-details',
-      //   label: 'Products Details',
-      //   url: '/apps/users-roles/product-details',
-      //   parentKey: 'app-users-roles',
-      // },
-      // {
-      //   key: 'add-products',
-      //   label: 'Add Products',
-      //   url: '/e-commerce/add-products',
-      //   parentKey: 'e-commerce',
-      // },
-      // {
-      //   key: 'categories',
-      //   label: 'Categories',
-      //   url: '/e-commerce/categories',
-      //   parentKey: 'e-commerce',
-      // },
-      // {
-      //   key: 'orders',
-      //   label: 'Orders',
-      //   url: '/e-commerce/orders',
-      //   parentKey: 'e-commerce',
-      // },
-      // {
-      //   key: 'order-details',
-      //   label: 'Order Details',
-      //   url: '/e-commerce/order-details',
-      //   parentKey: 'e-commerce',
-      // },
-      // {
-      //   key: 'customers',
-      //   label: 'Customers',
-      //   url: '/e-commerce/customers',
-      //   parentKey: 'e-commerce',
-      // },
-      // {
-      //   key: 'sellers',
-      //   label: 'Sellers',
-      //   url: '/e-commerce/sellers',
-      //   parentKey: 'e-commerce',
-      // },
     ]
   },
   {

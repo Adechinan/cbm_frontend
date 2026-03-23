@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import PageTitle from '@/components/PageTitle'
 import {
-  getAleasClimatiques, getBatiments, getCartoAlea, getCriteresEtatBatiment,
+  getAleasClimatiques, getBatiments, getCampagnes, getCartoAlea, getCriteresEtatBatiment,
   getCriteresEtatFonctionnel, getCriteresEtatTechnique, getEvaluation,
   getPartiesOuvrage, getPonderationsAlea, getRecensements, getTypesBatiment,
   getZonesClimatiques,
@@ -31,7 +31,7 @@ export default async function EvaluationDetailPage({
   const [
     batiments, recensements, criteresFonctionnels, criteresTechniques, typesBatiment,
     criteresEtatBatiment, zonesClimatiques, aleasClimatiques, cartoAlea,
-    partiesOuvrage, ponderationsAlea,
+    partiesOuvrage, ponderationsAlea, campagnes,
   ] = await Promise.all([
     getBatiments(),
     getRecensements(),
@@ -44,7 +44,12 @@ export default async function EvaluationDetailPage({
     getCartoAlea(),
     getPartiesOuvrage(),
     getPonderationsAlea(),
+    getCampagnes(),
   ])
+
+  const campagneCode = evaluation.campagneId
+    ? campagnes.find((c) => c.id === evaluation.campagneId)?.code
+    : undefined
 
   return (
     <>
@@ -63,6 +68,7 @@ export default async function EvaluationDetailPage({
         ponderationsAlea={ponderationsAlea}
         initialData={evaluation}
         editId={evaluation.id}
+        campagneCode={campagneCode}
       />
     </>
   )

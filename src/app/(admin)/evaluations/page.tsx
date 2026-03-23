@@ -54,8 +54,8 @@ export default async function EvaluationsPage() {
     e.batiment = batiments.find((b) => b.id === e.batimentId)
   })
 
-  console.log('EvaluationsPage data:', {
-    evaluations,
+  // console.log('EvaluationsPage data:', {
+  //   evaluations,
     // batiments,
     // recensements,
     // criteresFonctionnels,
@@ -67,7 +67,7 @@ export default async function EvaluationsPage() {
     // cartoAlea,
     // partiesOuvrage,
     // ponderationsAlea,
-  })
+  // })
 
   return (
     <>

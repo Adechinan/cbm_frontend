@@ -38,6 +38,14 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json() as Promise<T>
 }
 
+async function tryApi<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await fn()
+  } catch {
+    return fallback
+  }
+}
+
 function randomTempPassword(): string {
   const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'
   let out = 'Tmp-'
@@ -47,7 +55,7 @@ function randomTempPassword(): string {
 
 // Privileges
 export async function getPrivileges(): Promise<PrivilegeType[]> {
-  if (API_BASE) return apiFetch<PrivilegeType[]>('/api/admin/privileges')
+  if (API_BASE) return tryApi(() => apiFetch<PrivilegeType[]>('/api/admin/privileges'), privilegesData)
   return privilegesData
 }
 
@@ -80,7 +88,7 @@ export async function deletePrivilege(id: string): Promise<void> {
 
 // Roles
 export async function getRoles(): Promise<RoleType[]> {
-  if (API_BASE) return apiFetch<RoleType[]>('/api/admin/roles')
+  if (API_BASE) return tryApi(() => apiFetch<RoleType[]>('/api/admin/roles'), rolesData)
   return rolesData
 }
 
@@ -116,7 +124,7 @@ export async function deleteRole(id: string): Promise<void> {
 
 // Groups
 export async function getUserGroups(): Promise<UserGroupType[]> {
-  if (API_BASE) return apiFetch<UserGroupType[]>('/api/admin/groups')
+  if (API_BASE) return tryApi(() => apiFetch<UserGroupType[]>('/api/admin/groups'), userGroupsData)
   return userGroupsData
 }
 
@@ -149,7 +157,7 @@ export async function deleteUserGroup(id: string): Promise<void> {
 
 // Users
 export async function getAdminUsers(): Promise<AdminUserType[]> {
-  if (API_BASE) return apiFetch<AdminUserType[]>('/api/admin/users')
+  if (API_BASE) return tryApi(() => apiFetch<AdminUserType[]>('/api/admin/users'), adminUsersData)
   return adminUsersData
 }
 

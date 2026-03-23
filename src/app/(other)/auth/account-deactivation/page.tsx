@@ -38,7 +38,7 @@ const AccountDeactivationPage = () => {
             </div>
             <p className="text-danger fs-14 my-3">Back to <Link href="/auth/login" className="text-dark fw-semibold ms-1">Login !</Link>
             </p><p className="mt-auto mb-0">
-              {currentYear} © Osen - By <span className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">{developedBy}</span>
+              {currentYear} © Entretien Batiments - By <span className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">{developedBy}</span>
             </p>
           </Card>
         </Col>

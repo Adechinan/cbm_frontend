@@ -38,6 +38,18 @@ export type ComputedEvaluation = {
   anneeConstruction: number | undefined
 }
 
+// ─── Formatage ────────────────────────────────────────────────────────────────
+
+/**
+ * Formate un nombre en FCFA avec un espace normal entre les milliers (plus lisible que l'espace fine fr-FR).
+ * Ex: 1 234 567
+ */
+export function fmt(n: number): string {
+  return n
+    .toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+    .replace(/\u202F/g, '\u00A0') // espace fine → espace insécable standard (plus large)
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const NIVEAU_POND: Record<NiveauRisque, number> = { Faible: 0, Moyen: 50, Elevé: 100 }

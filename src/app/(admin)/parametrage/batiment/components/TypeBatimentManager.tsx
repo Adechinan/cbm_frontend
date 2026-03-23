@@ -48,13 +48,13 @@ export default function TypeBatimentManager({ typesInit }: Props) {
           <div>
             <h5 className="card-title mb-0">Types de bâtiment</h5>
           </div>
-          <Button
-            variant="success"
+          {/* <Button
+            variant="primary"
             size="sm"
             onClick={() => { setEditType(null); setShowModal(true) }}
           >
             <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter
-          </Button>
+          </Button> */}
         </CardHeader>
         <CardBody className="p-0">
           <div style={{ overflowX: 'auto' }}>

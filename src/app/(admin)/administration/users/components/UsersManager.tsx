@@ -2,6 +2,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { usePrivileges } from '@/hooks/usePrivileges'
 import {
   Badge,
   Button,
@@ -53,6 +54,7 @@ function formatDate(value?: string): string {
 }
 
 export default function UsersManager({ usersInit, roles, groups }: Props) {
+  const priv = usePrivileges()
   const [users, setUsers] = useState<AdminUserType[]>(usersInit)
   const [showUserModal, setShowUserModal] = useState(false)
   const [editingUser, setEditingUser] = useState<AdminUserType | null>(null)
@@ -148,9 +150,11 @@ export default function UsersManager({ usersInit, roles, groups }: Props) {
               Gestion des utilisateurs et réinitialisation de mot de passe
             </p>
           </div>
-          <Button variant="success" size="sm" onClick={openAddUser}>
-            <IconifyIcon icon="tabler:user-plus" className="me-1" /> Ajouter un utilisateur
-          </Button>
+          {priv.canEditSettings && (
+            <Button variant="success" size="sm" onClick={openAddUser}>
+              <IconifyIcon icon="tabler:user-plus" className="me-1" /> Ajouter un utilisateur
+            </Button>
+          )}
         </CardHeader>
         <CardBody className="p-0">
           <Table hover responsive className="mb-0 align-middle table-sm">
@@ -201,21 +205,25 @@ export default function UsersManager({ usersInit, roles, groups }: Props) {
                   </td>
                   <td className="text-center pe-3">
                     <div className="hstack gap-1 justify-content-center">
-                      <Button
-                        variant="soft-info"
-                        size="sm"
-                        className="btn-icon rounded-circle"
-                        title="Réinitialiser mot de passe"
-                        onClick={() => openResetModal(user)}
-                      >
-                        <IconifyIcon icon="tabler:key" />
-                      </Button>
-                      <Button variant="soft-success" size="sm" className="btn-icon rounded-circle" onClick={() => openEditUser(user)}>
-                        <IconifyIcon icon="tabler:edit" />
-                      </Button>
-                      <Button variant="soft-danger" size="sm" className="btn-icon rounded-circle" onClick={() => handleDeleteUser(user)}>
-                        <IconifyIcon icon="tabler:trash" />
-                      </Button>
+                      {priv.canEditSettings && (
+                        <>
+                          <Button
+                            variant="soft-info"
+                            size="sm"
+                            className="btn-icon rounded-circle"
+                            title="Réinitialiser mot de passe"
+                            onClick={() => openResetModal(user)}
+                          >
+                            <IconifyIcon icon="tabler:key" />
+                          </Button>
+                          <Button variant="soft-success" size="sm" className="btn-icon rounded-circle" onClick={() => openEditUser(user)}>
+                            <IconifyIcon icon="tabler:edit" />
+                          </Button>
+                          <Button variant="soft-danger" size="sm" className="btn-icon rounded-circle" onClick={() => handleDeleteUser(user)}>
+                            <IconifyIcon icon="tabler:trash" />
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

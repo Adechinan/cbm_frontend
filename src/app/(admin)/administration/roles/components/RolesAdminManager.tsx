@@ -2,6 +2,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { usePrivileges } from '@/hooks/usePrivileges'
 import {
   Badge,
   Button,
@@ -69,6 +70,7 @@ function RoleNames({ roleIds, roles }: { roleIds: string[]; roles: RoleType[] })
 }
 
 export default function RolesAdminManager({ privilegesInit, rolesInit, groupsInit }: Props) {
+  const priv = usePrivileges()
   const [privileges, setPrivileges] = useState<PrivilegeType[]>(privilegesInit)
   const [roles, setRoles] = useState<RoleType[]>(rolesInit)
   const [groups, setGroups] = useState<UserGroupType[]>(groupsInit)
@@ -264,9 +266,9 @@ export default function RolesAdminManager({ privilegesInit, rolesInit, groupsIni
             <h5 className="mb-0">Privilèges</h5>
             <p className="text-muted small mb-0">Privilèges et règles d'accès</p>
           </div>
-          <Button variant="success" size="sm" onClick={openAddPrivilege}>
+          {/* <Button variant="success" size="sm" onClick={openAddPrivilege}>
             <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter un privilège
-          </Button>
+          </Button> */}
         </CardHeader>
         <CardBody className="p-0">
           <Table responsive hover className="mb-0 align-middle table-sm">
@@ -298,12 +300,14 @@ export default function RolesAdminManager({ privilegesInit, rolesInit, groupsIni
                   </td>
                   <td className="text-center pe-3">
                     <div className="hstack gap-1 justify-content-center">
-                      <Button variant="soft-success" size="sm" className="btn-icon rounded-circle" onClick={() => openEditPrivilege(privilege)}>
-                        <IconifyIcon icon="tabler:edit" />
-                      </Button>
-                      <Button variant="soft-danger" size="sm" className="btn-icon rounded-circle" disabled={privilege.system} onClick={() => handleDeletePrivilege(privilege)}>
+                      {priv.canEditSettings && (
+                        <Button variant="soft-success" size="sm" className="btn-icon rounded-circle" onClick={() => openEditPrivilege(privilege)}>
+                          <IconifyIcon icon="tabler:edit" />
+                        </Button>
+                      )}
+                      {/* <Button variant="soft-danger" size="sm" className="btn-icon rounded-circle" disabled={privilege.system} onClick={() => handleDeletePrivilege(privilege)}>
                         <IconifyIcon icon="tabler:trash" />
-                      </Button>
+                      </Button> */}
                     </div>
                   </td>
                 </tr>
@@ -319,9 +323,11 @@ export default function RolesAdminManager({ privilegesInit, rolesInit, groupsIni
             <h5 className="mb-0">Rôles</h5>
             <p className="text-muted small mb-0">Associez des privilèges aux rôles</p>
           </div>
-          <Button variant="success" size="sm" onClick={openAddRole}>
-            <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter un rôle
-          </Button>
+          {priv.canEditSettings && (
+            <Button variant="success" size="sm" onClick={openAddRole}>
+              <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter un rôle
+            </Button>
+          )}
         </CardHeader>
         <CardBody className="p-0">
           <Table responsive hover className="mb-0 align-middle table-sm">
@@ -353,12 +359,14 @@ export default function RolesAdminManager({ privilegesInit, rolesInit, groupsIni
                   <td className="text-center"><Badge bg={role.system ? 'secondary' : 'info'}>{role.system ? 'Système' : 'Custom'}</Badge></td>
                   <td className="text-center pe-3">
                     <div className="hstack gap-1 justify-content-center">
-                      <Button variant="soft-success" size="sm" className="btn-icon rounded-circle" onClick={() => openEditRole(role)}>
-                        <IconifyIcon icon="tabler:edit" />
-                      </Button>
-                      <Button variant="soft-danger" size="sm" className="btn-icon rounded-circle" disabled={role.system} onClick={() => handleDeleteRole(role)}>
+                      {priv.canEditSettings && (
+                        <Button variant="soft-success" size="sm" className="btn-icon rounded-circle" onClick={() => openEditRole(role)}>
+                          <IconifyIcon icon="tabler:edit" />
+                        </Button>
+                      )}
+                      {/* <Button variant="soft-danger" size="sm" className="btn-icon rounded-circle" disabled={role.system} onClick={() => handleDeleteRole(role)}>
                         <IconifyIcon icon="tabler:trash" />
-                      </Button>
+                      </Button> */}
                     </div>
                   </td>
                 </tr>
@@ -374,9 +382,11 @@ export default function RolesAdminManager({ privilegesInit, rolesInit, groupsIni
             <h5 className="mb-0">Groupes utilisateurs</h5>
             <p className="text-muted small mb-0">Regroupez les utilisateurs par équipes et rôles</p>
           </div>
-          <Button variant="success" size="sm" onClick={openAddGroup}>
-            <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter un groupe
-          </Button>
+          {priv.canEditSettings && (
+            <Button variant="success" size="sm" onClick={openAddGroup}>
+              <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter un groupe
+            </Button>
+          )}
         </CardHeader>
         <CardBody className="p-0">
           <Table responsive hover className="mb-0 align-middle table-sm">
@@ -398,12 +408,14 @@ export default function RolesAdminManager({ privilegesInit, rolesInit, groupsIni
                   <td className="text-center"><Badge bg={group.actif ? 'success' : 'secondary'}>{group.actif ? 'Actif' : 'Inactif'}</Badge></td>
                   <td className="text-center pe-3">
                     <div className="hstack gap-1 justify-content-center">
-                      <Button variant="soft-success" size="sm" className="btn-icon rounded-circle" onClick={() => openEditGroup(group)}>
-                        <IconifyIcon icon="tabler:edit" />
-                      </Button>
-                      <Button variant="soft-danger" size="sm" className="btn-icon rounded-circle" onClick={() => handleDeleteGroup(group)}>
+                      {priv.canEditSettings && (
+                        <Button variant="soft-success" size="sm" className="btn-icon rounded-circle" onClick={() => openEditGroup(group)}>
+                          <IconifyIcon icon="tabler:edit" />
+                        </Button>
+                      )}
+                      {/* <Button variant="soft-danger" size="sm" className="btn-icon rounded-circle" onClick={() => handleDeleteGroup(group)}>
                         <IconifyIcon icon="tabler:trash" />
-                      </Button>
+                      </Button> */}
                     </div>
                   </td>
                 </tr>

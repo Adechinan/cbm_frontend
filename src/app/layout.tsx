@@ -20,10 +20,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Osen Nextjs - Responsive Bootstrap 5 Admin Dashboard',
+    template: '%s | DGML - Entretien de bâtiments',
     default: DEFAULT_PAGE_TITLE,
   },
-  description: 'A fully responsive premium admin dashboard template, Real Estate Management Admin Template',
+  description: 'Application d\'entretien de bâtiments pour la gestion des campagnes d\'évaluation, recensements et suivi des interventions.',
 }
 
 
@@ -33,7 +33,7 @@ const customLogo = () => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 420 80"
       role="img"
-      aria-label="isellup.com"
+      aria-label="entretien-batiments.dgml.bj"
       style={{ width: "100%", maxWidth: 150, height: "auto", display: "block" }}
       preserveAspectRatio="xMidYMid meet"
     >
@@ -67,7 +67,6 @@ const splashScreenStyles = `
   justify-content: center;
   z-index: 9999;
   opacity: 1;
-  transition: all 15s linear;
   overflow: hidden;
 }
 

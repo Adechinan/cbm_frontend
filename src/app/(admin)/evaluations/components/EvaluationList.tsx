@@ -20,6 +20,8 @@ import {
   ZoneClimatiqueType,
 } from '@/types/entretien-batiment'
 import { deleteEvaluation, validerEvaluation } from '@/services/batimentService'
+import { fmt } from '@/utils/evaluationCalcul'
+import { usePrivileges } from '@/hooks/usePrivileges'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import EvaluationForm, { EvaluationFormHandle } from '../nouveau/components/EvaluationForm'
 
@@ -31,9 +33,6 @@ const STATUT_BG: Record<string, string> = {
 }
 
 const CU_BG = (cu: number) => cu >= 45 ? 'danger' : cu >= 20 ? 'warning' : 'success'
-
-const fmt = (n: number) =>
-  n.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
 
 const PAGE_SIZE = 10
 type SortCol = 'batiment' | 'cu' | 'cout' | 'statut'
@@ -72,6 +71,7 @@ export default function EvaluationList({
   partiesOuvrage,
   ponderationsAlea,
 }: Props) {
+  const priv = usePrivileges()
   const [evaluations, setEvaluations] = useState<EvaluationType[]>(evaluationsInit)
   const [editModal, setEditModal] = useState<EvaluationType | null>(null)
   const [viewModal, setViewModal] = useState<EvaluationType | null>(null)
@@ -202,12 +202,14 @@ export default function EvaluationList({
               {evaluations.length} évaluation{evaluations.length !== 1 ? 's' : ''}
             </Badge>
           </div>
-          <Link href="/evaluations/nouveau">
-            <Button variant="primary" size="sm">
-              <IconifyIcon icon="tabler:plus" className="me-1" />
-              Nouvelle évaluation
-            </Button>
-          </Link>
+          {priv.canCreate && (
+            <Link href="/evaluations/nouveau">
+              <Button variant="primary" size="sm">
+                <IconifyIcon icon="tabler:plus" className="me-1" />
+                Nouvelle évaluation
+              </Button>
+            </Link>
+          )}
         </CardHeader>
         <CardBody className="p-0">
           {evaluations.length === 0 ? (
@@ -363,8 +365,8 @@ export default function EvaluationList({
                               <IconifyIcon icon="tabler:eye" />
                             </Button>
 
-                            {/* Modifier (brouillon uniquement) */}
-                            {e.statut === 'brouillon' && (
+                            {/* Modifier (brouillon + canCreate) */}
+                            {e.statut === 'brouillon' && priv.canCreate && (
                               <Button
                                 size="sm" variant="soft-success" title="Modifier"
                                 className="btn-icon rounded-circle"
@@ -388,18 +390,20 @@ export default function EvaluationList({
                               </Button>
                             )} */}
 
-                            {/* Supprimer (brouillon uniquement) */}
-                            <Button
-                              size="sm" variant="soft-danger"
-                              title={e.statut === 'validé' ? 'Impossible de supprimer une évaluation validée' : 'Supprimer'}
-                              disabled={e.statut === 'validé' || isDeleting}
-                              className="btn-icon rounded-circle"
-                              onClick={() => handleDelete(e.id)}
-                            >
-                              {isDeleting
-                                ? <span className="spinner-border spinner-border-sm" />
-                                : <IconifyIcon icon="tabler:trash" />}
-                            </Button>
+                            {/* Supprimer (brouillon + canCreate) */}
+                            {priv.canCreate && (
+                              <Button
+                                size="sm" variant="soft-danger"
+                                title={e.statut === 'validé' ? 'Impossible de supprimer une évaluation validée' : 'Supprimer'}
+                                disabled={e.statut === 'validé' || isDeleting}
+                                className="btn-icon rounded-circle"
+                                onClick={() => handleDelete(e.id)}
+                              >
+                                {isDeleting
+                                  ? <span className="spinner-border spinner-border-sm" />
+                                  : <IconifyIcon icon="tabler:trash" />}
+                              </Button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -580,19 +584,21 @@ export default function EvaluationList({
             Annuler
           </Button>
 
-          {/* Enregistrer */}
-          <Button
-            variant="primary"
-            disabled={formSaving}
-            onClick={() => formRef.current?.save()}
-          >
-            {formSaving
-              ? <><span className="spinner-border spinner-border-sm me-1" />Enregistrement...</>
-              : <><IconifyIcon icon="tabler:device-floppy" className="me-1" />Enregistrer</>}
-          </Button>
+          {/* Enregistrer (canCreate) */}
+          {priv.canCreate && (
+            <Button
+              variant="primary"
+              disabled={formSaving}
+              onClick={() => formRef.current?.save()}
+            >
+              {formSaving
+                ? <><span className="spinner-border spinner-border-sm me-1" />Enregistrement...</>
+                : <><IconifyIcon icon="tabler:device-floppy" className="me-1" />Enregistrer</>}
+            </Button>
+          )}
 
-          {/* Valider (brouillon uniquement) */}
-          {editModal?.statut === 'brouillon' && (
+          {/* Valider (brouillon + canValidate) */}
+          {editModal?.statut === 'brouillon' && priv.canValidate && (
             <Button
               variant="success"
               disabled={validating === editModal?.id}

@@ -102,13 +102,14 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 /**
- * Exécute un appel API et laisse les erreurs remonter vers le error boundary
- * Next.js (error.tsx). Le paramètre `_fallback` est conservé uniquement pour
- * compatibilité avec le chemin sans API_BASE dans chaque service.
+ * Tente un appel API et retourne le fallback en cas d'échec (ex: build SSR sans token).
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function tryApi<T>(fn: () => Promise<T>, _fallback: T): Promise<T> {
-  return fn()
+async function tryApi<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await fn()
+  } catch {
+    return fallback
+  }
 }
 
 // ─── Helpers internes ────────────────────────────────────────────────────────

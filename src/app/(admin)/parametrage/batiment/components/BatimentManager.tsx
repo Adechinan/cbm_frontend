@@ -5,6 +5,8 @@ import { useState } from 'react'
 import { Accordion, Badge, Button, Card, CardBody, CardHeader, Col, Modal, Pagination, Row, Table } from 'react-bootstrap'
 import { BatimentType, SectionFicheType, ZoneClimatiqueType } from '@/types/entretien-batiment'
 import { deleteBatiment } from '@/services/batimentService'
+import { fmt } from '@/utils/evaluationCalcul'
+import { usePrivileges } from '@/hooks/usePrivileges'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import BatimentModal from './BatimentModal'
 
@@ -32,6 +34,7 @@ type Props = {
 }
 
 export default function BatimentManager({ batimentsInit, sections, zonesClimatiques }: Props) {
+  const priv = usePrivileges()
   const [batiments, setBatiments]       = useState<BatimentType[]>(batimentsInit)
   const [showModal,    setShowModal]    = useState(false)
   const [editBatiment, setEditBatiment] = useState<BatimentType | null>(null)
@@ -120,9 +123,11 @@ export default function BatimentManager({ batimentsInit, sections, zonesClimatiq
               {batiments.length} bâtiment{batiments.length !== 1 ? 's' : ''} enregistré{batiments.length !== 1 ? 's' : ''}
             </p>
           </div>
-          <Button variant="success" size="sm" onClick={openAdd}>
-            <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter un bâtiment
-          </Button>
+          {priv.canCreate && (
+            <Button variant="primary" size="sm" onClick={openAdd}>
+              <IconifyIcon icon="tabler:plus" className="me-1" /> Ajouter un bâtiment
+            </Button>
+          )}
         </CardHeader>
         <CardBody className="p-0">
           <div style={{ overflowX: 'auto' }}>
@@ -180,10 +185,12 @@ export default function BatimentManager({ batimentsInit, sections, zonesClimatiq
                           onClick={() => openView(b)} title="Consulter">
                           <IconifyIcon icon="tabler:eye" />
                         </Button>
-                        <Button variant="soft-success" size="sm" className="btn-icon rounded-circle"
-                          onClick={() => openEdit(b)} title="Modifier">
-                          <IconifyIcon icon="tabler:edit" />
-                        </Button>
+                        {priv.canCreate && (
+                          <Button variant="soft-success" size="sm" className="btn-icon rounded-circle"
+                            onClick={() => openEdit(b)} title="Modifier">
+                            <IconifyIcon icon="tabler:edit" />
+                          </Button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -279,7 +286,7 @@ export default function BatimentManager({ batimentsInit, sections, zonesClimatiq
                     <Row>
                       {field('Année de construction', b.anneeConstruction)}
                       {field('Années de restructuration', (b.anneesRestructuration ?? []).join(', '))}
-                      {field('Coût de construction (FCFA)', b.coutConstruction?.toLocaleString('fr-FR'))}
+                      {field('Coût de construction (FCFA)', b.coutConstruction != null ? fmt(b.coutConstruction) : undefined)}
                       {field('Statut', <Badge bg={STATUT_BG[b.statutConstruction] ?? 'secondary'} className="fw-normal">{b.statutConstruction}</Badge>)}
                     </Row>
                   </Accordion.Body>

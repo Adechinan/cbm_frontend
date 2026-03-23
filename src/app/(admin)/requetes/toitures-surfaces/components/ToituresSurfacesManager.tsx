@@ -6,6 +6,7 @@ import { Badge, Button, Card, CardBody, CardHeader, Col, Form, Modal, Row, Table
 import { BatimentType } from '@/types/entretien-batiment'
 import IconifyIcon from '@/components/wrappers/IconifyIcon'
 import { PAGE_SIZE, PageBar, usePagination } from '@/hooks/usePagination'
+import { fmt } from '@/utils/evaluationCalcul'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -174,7 +175,7 @@ function ClassementTable({
               </td>
               <td className="small">{b.usages?.length ? b.usages.join(', ') : '—'}</td>
               <td className="text-end fw-medium">
-                {b._valeur.toLocaleString('fr-FR')}{' '}
+                {fmt(b._valeur)}{' '}
                 <span className="text-muted small">{valueUnit}</span>
               </td>
             </tr>

@@ -58,6 +58,7 @@ export type BatimentType = {
   code: string
   sections: SectionFicheType[]
   codeBatiment: string
+  codeLiaison: string
   denomination: string
   organisme: string
   modeAcquisition: string

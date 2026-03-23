@@ -35,7 +35,7 @@ const CreatePasswordPage = () => {
               <CreatePassFrom />
               <p className="text-danger fs-14 mb-4">Back To <Link href="/auth/login" className="fw-semibold text-dark ms-1">Login !</Link></p>
               <p className="mt-auto mb-0">
-                 {currentYear} © Osen - By <span className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">{developedBy}</span>
+                 {currentYear} © Entretien Batiments - By <span className="fw-bold text-decoration-underline text-uppercase text-reset fs-12">{developedBy}</span>
               </p>
             </Card>
           </Col>
